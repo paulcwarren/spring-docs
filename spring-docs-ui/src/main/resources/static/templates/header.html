@@ -1,0 +1,33 @@
+<div id="header" ng-controller="InfoController" class="col-xs-12">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <span class="navbar-brand" href="#">Spring Docs <span class="glyphicon glyphicon-file"></span></span>
+                <ul class="navbar-nav">
+                    <!--<li></li>-->
+                </ul>
+	        </div>
+
+            <ul class="nav navbar-nav navbar-right">
+            	<div style="display: table-cell; vertical-align: middle; height: 50px;">
+<!-- 	            	<input style="float:left" width="100px" placeholder="Search"/>
+ -->
+ 					<div class="input-group" style="float:left">
+					  <input type="text" class="form-control" placeholder="Search for ..." aria-describedby="basic-addon2" ng-model="app.keywords" ng-keypress="app.keywords=='' && app.findAll()" ng-keyup="$event.keyCode == 13 && app.doSearch()">
+					  <span class="input-group-addon" id="basic-addon2" ng-click="app.doSearch()"><span class="glyphicon glyphicon-{{app.searchIcon}}"/></span>
+					</div>
+					
+ 	                <li class="dropdown" style="float:right">
+	                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-left: 10px; padding-right: 10px;">
+	                        <span class="glyphicon glyphicon-info-sign icon-white" style="top:7px; font-size: 20px;"></span>
+	                    </a>
+	                    <ul class="dropdown-menu">
+	                        <li><a><strong>Profiles:</strong> {{info.profiles.join()}}</a></li>
+	                        <li><a><strong>Services:</strong> {{info.services.join()}}</a></li>
+	                    </ul>
+	                </li>
+	        	</div>
+            </ul>
+        </div>
+    </nav>
+</div>

@@ -1,0 +1,39 @@
+<div id="albums" ng-init="init()">
+    <div class="page-header">
+    <div class="row">
+	  	<div class="col-md-10">
+	        <h1>Documents</h1>
+	        <div>
+	            <span> [ view as: </span>
+	            <a href="" ng-click="setAlbumsView('grid')"><span class="glyphicon glyphicon-th"></span></a>
+	            <a href="" ng-click="setAlbumsView('list')"><span class="glyphicon glyphicon-th-list"></span></a>
+	            <span> | sort by: </span>
+	            <a href="" ng-click="sortField='title'">title</a>
+	            <a href="" ng-click="sortField='author'">author</a>
+	            <a href="" ng-click="sortDescending=!sortDescending">
+	                <span class="glyphicon" ng-class="{'glyphicon-chevron-up' : !sortDescending, 'glyphicon-chevron-down' : sortDescending}"></span>
+	            </a>
+	            <span> | </span>
+	            <a href="" ng-click="addDocument()"><span class="glyphicon glyphicon-plus"></span>add a document</a> 
+	            <span> ] </span>
+	        </div>
+	  	</div>
+	  	<div class="col-md-2">
+            <div style="float:right; margin: 10px 0px 10px 10px;" 
+            	ngf-drop="uploadFiles($files)" class="drop-box"
+			  	ngf-drag-over-class="{pattern: 'application/*', accept:'dragover', reject:'dragover-err', delay:100}" 
+			  	ngf-pattern="'.docx'"
+			  	ngf-multiple=true
+			 	>Drop zone</div>
+			<div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+		</div>
+	</div>
+
+    <div class="row">
+        <div ng-include src="'templates/status.html'"></div>
+    </div>
+
+    <div class="row multi-columns-row">
+        <div ng-include src="albumsView"></div>
+    </div>
+</div>
