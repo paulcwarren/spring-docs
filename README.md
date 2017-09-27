@@ -1,11 +1,13 @@
 Spring Docs
 ===========
 
-This is a sample application for using database and storage services on [Cloud Foundry](http://cloudfoundry.org) with the [Spring Framework](http://spring.io).
+This is a sample application for using database and storage services with the [Spring Framework](http://spring.io).
 
-This application has been built to store the same domain object in one of a variety of different persistence technologies - relational, document, and key-value stores.  To store content associated with that domain object in a variety of different storage technologies - file, object, BLOBs or Mongo's GridFS.  To index and search content using Apache Solr.  This is not meant to represent a realistic use case for these technologies, since you would typically choose the service most applicable to the type of data and content you need to store, but it is useful for testing and experimenting with different types of services on Cloud Foundry. 
+This application has been built as a sample Content Service.  A  domain object provides metadata for content.  The content is also indexed so it can be searched.  
 
-The application uses Spring Java configuration and [bean profiles](https://spring.io/blog/2011/02/14/spring-3-1-m1-introducing-profile/) to configure the application and the connection objects needed to use the database and storage service. It also uses the [Spring Cloud Connectors](http://cloud.spring.io/spring-cloud-connectors/) library to inspect the environment when running on Cloud Foundry. See the [Cloud Foundry documentation](http://docs.cloudfoundry.org/buildpacks/java/spring-service-bindings.html) for details on configuring a Spring application for Cloud Foundry.
+The domain object is persisted in one of a variety of different databases - relational, document, and key-value stores.  Uploaded documents are associated with that domain object and stored in a variety of different stores - file, object, BLOBs or Mongo's GridFS - and also indexed using Apache Solr allowing searches "inside" those documents (also known as a fulltext search).  Whilst this is a realistic data model for an Content Service it is not meant to represent a realistic use case for these technologies, since you would typically choose the service most applicable to the type of data and content you need to store, but it is useful for testing and experimenting with different types of services. 
+
+The application uses Spring Java configuration and [bean profiles](https://spring.io/blog/2011/02/14/spring-3-1-m1-introducing-profile/) to configure the application and the connection objects needed to use the database and storage service.
 
 The application is run as two separate microservices.  spring-docs provides the Spring Boot, Spring Data and Spring Content backend service.  spring-docs-ui provides an angularjs 1.x user interface. 
 
