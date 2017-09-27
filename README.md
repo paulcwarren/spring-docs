@@ -13,7 +13,7 @@ The application is run as two separate microservices.  spring-docs provides the 
 
 One Spring bean profile should be activated to choose the database provider that the application should use and another to choose the storage provider. These two profiles are selected by setting the system property `spring.profiles.active` when starting the app.
 
-The application can be started locally using the following command:
+The Content Service can be started locally using the following command:
 
 ~~~
 ~/spring-docs/spring-docs/$ mvn spring-boot:run -Dspring.profiles.active=<database profile, storage profile>
@@ -43,3 +43,11 @@ Likewise, if no storage profile is provided, `filesystem` will be used. If any o
 must be started separately. The application will use the host name `localhost` and the default port to connect to the storage.
 
 If more than one of these storage profiles are provided, the application will throw an exception and fail to start.
+
+The user interface service can be started locally using the following command:
+
+~~~
+~/spring-docs/spring-docs-ui/$ mvn spring-boot:run 
+~~~
+
+The application will then be available to use at `http://localhost:9090/index.html`.
