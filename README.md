@@ -3,13 +3,13 @@ Spring Docs
 
 This is a sample application for using database and storage services with the [Spring Framework](http://spring.io).
 
-This application has been built as a sample Content Service.  A  domain object provides metadata for content.  The content is also indexed so it can be searched.  
+This application has been built as a sample Content Service.  It is designed around the 3 central tenets of a Content Management System; content, content metadata and content search.  The design comprises of a domain object that provides metadata around a piece content.  The application exposes REST endpoints for performing CRUD operations on domain objects, for associating content with those domain object and for searching for domain objects based on text their content may contain.    
 
-The domain object is persisted in one of a variety of different databases - relational, document, and key-value stores.  Uploaded documents are associated with that domain object and stored in a variety of different stores - file, object, BLOBs or Mongo's GridFS - and also indexed using Apache Solr allowing searches "inside" those documents (also known as a fulltext search).  Whilst this is a realistic data model for an Content Service it is not meant to represent a realistic use case for these technologies, since you would typically choose the service most applicable to the type of data and content you need to store, but it is useful for testing and experimenting with different types of services. 
+The domain object is persisted in one of a variety of different databases - relational, document, and key-value stores.  Uploaded documents associated with those domain objects and stored in a variety of different stores - file, object, BLOBs or Mongo's GridFS - and also indexed using Apache Solr allowing searches "inside" those documents (also known as a fulltext search).  Whilst this is a realistic data model for an Content Service it is not meant to represent a realistic use case for these technologies, since you would typically choose the database and storage service most applicable to the type of data and content you need to store, but it is useful for testing and experimenting with different types of services. 
 
 The application uses Spring Java configuration and [bean profiles](https://spring.io/blog/2011/02/14/spring-3-1-m1-introducing-profile/) to configure the application and the connection objects needed to use the database and storage service.
 
-The application is run as two separate microservices.  spring-docs provides the Spring Boot, Spring Data and Spring Content backend service.  spring-docs-ui provides an angularjs 1.x user interface. 
+The application is run as two separate microservices.  spring-docs provides a Spring Boot, Spring Data and Spring Content backend service.  spring-docs-ui provides an angularjs 1.x based user interface. 
 
 ## Running the application locally
 
