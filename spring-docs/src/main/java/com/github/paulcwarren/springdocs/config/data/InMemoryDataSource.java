@@ -15,35 +15,11 @@ import javax.sql.DataSource;
 
 @Configuration
 @Profile("in-memory")
-public class InMemoryDataSource {
+public class InMemoryDataSource extends AbstractLocalDataSourceConfig {
 
     @Bean
     public DataSource dataSource() {
-        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-        return builder.setType(EmbeddedDatabaseType.H2).build();
+        return createDataSource("jdbc:h2:mem:testdb", "org.h2.Driver", "sa", "");
     }
-
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-
-        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setDatabase(Database.H2);
-        vendorAdapter.setGenerateDdl(true);
-
-        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-        factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("com.github.paulcwarren.springdocs.domain");  	// Tell Hibernate where to find Entities
-        factory.setDataSource(dataSource());
-
-        return factory;
-    }
-
-    @Bean
-    public PlatformTransactionManager transactionManager() {
-
-        JpaTransactionManager txManager = new JpaTransactionManager();
-        txManager.setEntityManagerFactory(entityManagerFactory().getObject());
-        return txManager;
-    }
-
+    
 }
