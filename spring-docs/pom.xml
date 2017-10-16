@@ -93,34 +93,11 @@
 			<artifactId>content-mongo-spring-boot-starter</artifactId>
 			<version>${spring.content.version}</version>
 		</dependency>
-
-		<!-- Original Dependencies -->
-<!-- 		<dependency>
-			<groupId>com.github.paulcwarren</groupId>
-			<artifactId>cassandra-embedded</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency> 		
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-cassandra</artifactId>
-			<optional>true</optional>
-		</dependency>
--->		
-
-		<!-- Spring Content Dependencies -->
-<!-- 		<dependency>
 			<groupId>com.github.paulcwarren</groupId>
-			<artifactId>spring-content-s3-boot-starter</artifactId>
+			<artifactId>spring-content-renditions-boot-starter</artifactId>
 			<version>${spring.content.version}</version>
-			<optional>true</optional>
 		</dependency>
- 		<dependency>
-		    <groupId>com.github.paulcwarren</groupId>
-		    <artifactId>s3-embedded</artifactId>
-		    <version>0.0.1-SNAPSHOT</version>
-		</dependency>
- -->
-		<!-- Apache Solr Dependencies -->
  		<dependency>
 			<groupId>com.github.paulcwarren</groupId>
 			<artifactId>spring-content-solr-boot-starter</artifactId>
@@ -144,29 +121,6 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		
-		<!-- Renditions -->	
-<!-- 		<dependency>
-		    <groupId>com.github.paulcwarren</groupId>
-		    <artifactId>spring-content-docx4j</artifactId>
-		    <version>${spring.content.version}</version>
-		</dependency>
- -->
-		<dependency>
-		    <groupId>org.apache.poi</groupId>
-		    <artifactId>poi</artifactId>
-		    <version>3.16</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.apache.poi</groupId>
-		    <artifactId>poi-ooxml</artifactId>
-		    <version>3.16</version>
-		</dependency>
-<!-- 		<dependency>
-		    <groupId>org.apache.poi</groupId>
-		    <artifactId>poi-scratchpad</artifactId>
-		    <version>3.16</version>
-		</dependency>
- -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

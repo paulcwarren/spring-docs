@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.github.paulcwarren.springdocs.domain.Document;
 
-@CrossOrigin(origins = "http://localhost:9090")
+@CrossOrigin(origins = "http://localhost:8080")
 @StoreRestResource(path="documentscontent")
 public interface DocumentStore extends ContentStore<Document, String>, Searchable<String>, Renderable<String> {
 	//

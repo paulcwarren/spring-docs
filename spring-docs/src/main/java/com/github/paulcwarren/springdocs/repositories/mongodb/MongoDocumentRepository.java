@@ -12,7 +12,7 @@ import com.github.paulcwarren.springdocs.domain.Document;
 
 @Repository
 @Profile("mongodb")
-@CrossOrigin(origins = "http://localhost:9090")
+@CrossOrigin(origins = "http://localhost:8080")
 public interface MongoDocumentRepository extends MongoRepository<Document, String> {
 	
 	List<Document> findByTitle(@Param("title") String title);
