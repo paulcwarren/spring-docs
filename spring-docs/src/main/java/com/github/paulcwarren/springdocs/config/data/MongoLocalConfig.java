@@ -13,11 +13,7 @@ public class MongoLocalConfig {
 
     @Bean
     public MongoDbFactory mongoDbFactory() {
-//        try {
-            return new SimpleMongoDbFactory(new MongoClient(), "spring-docs");
-//        } catch (UnknownHostException e) {
-//            throw new RuntimeException("Error creating MongoDbFactory: " + e);
-//        }
+        return new SimpleMongoDbFactory(new MongoClient(), "spring-docs");
     }
 
 }

@@ -25,10 +25,10 @@ public class SpringApplicationContextInitializer implements ApplicationContextIn
 
     private static final Map<Class<? extends ServiceInfo>, String> dataServiceTypeToProfileName = new HashMap<>();
     private static final List<String> validLocalDataProfiles = Arrays.asList("mysql", "postgres", "mongodb", "redis");
-    private static final List<String> validLocalStoreProfiles = Arrays.asList("blob", "gridfs", "filesystem");
+    private static final List<String> validLocalStoreProfiles = Arrays.asList("blob", "gridfs", "fs");
 
     public static final String IN_MEMORY_PROFILE = "in-memory";
-    public static final String FILE_SYSTEM_PROFILE = "filesystem";
+    public static final String FILE_SYSTEM_PROFILE = "fs";
 
     static {
         dataServiceTypeToProfileName.put(MongoServiceInfo.class, "mongodb");

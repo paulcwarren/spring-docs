@@ -4,19 +4,19 @@ springMusic.
     	this.getAllDocuments = function getAllDocuments() {
     	    return this.unwrap($http({
     	        method : 'GET',
-    	        url : 'http://localhost:8080/documents'
+    	        url : 'http://localhost:9090/documents'
     	    }));
     	}
     	
     	this.searchContent = function searchContent(keyword) {
     	    return this.unwrap($http({
     	        method : 'GET',
-    	        url : 'http://localhost:8080/documents/searchContent/findKeyword?keyword=' + keyword
+    	        url : 'http://localhost:9090/documents/searchContent/findKeyword?keyword=' + keyword
     	    }));
     	}
 
     	this.save = function save(doc, onSaveSuccess, onSaveError) {
-    		return $resource('http://localhost:8080/documents').save(doc, 
+    		return $resource('http://localhost:9090/documents').save(doc,
     			function(result) {
 		        	SpringDataRestAdapter.process(result).then(function(processedResponse) {
 			        	var upload = Upload.upload(

@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 
 @Configuration
-@Profile("gridfs-local")
+@Profile("gridfs")
 public class GridFsConfig {
 
 	@Autowired private MongoDbFactory mongoDbFactory;

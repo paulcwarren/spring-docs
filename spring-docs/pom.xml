@@ -87,7 +87,12 @@
 			<groupId>com.github.paulcwarren</groupId>
 			<artifactId>spring-content-rest-boot-starter</artifactId>
 			<version>${spring.content.version}</version>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>com.github.paulcwarren</groupId>
+			<artifactId>content-fs-spring-boot-starter</artifactId>
+			<version>${spring.content.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.github.paulcwarren</groupId>
 			<artifactId>content-mongo-spring-boot-starter</artifactId>
