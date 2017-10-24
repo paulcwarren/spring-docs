@@ -1,10 +1,8 @@
 package com.github.paulcwarren.springdocs.config.store;
 
+import com.github.paulcwarren.solr.EnableSolrEmbedded;
 import org.springframework.content.solr.SolrProperties;
 import org.springframework.context.annotation.Configuration;
-
-import com.github.paulcwarren.solr.EnableSolrEmbedded;
-import org.springframework.context.annotation.Profile;
 
 @Configuration
 //@Profile("solr")
