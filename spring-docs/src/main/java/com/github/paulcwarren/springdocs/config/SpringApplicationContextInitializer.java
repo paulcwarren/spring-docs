@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.cloud.Cloud;
 import org.springframework.cloud.CloudException;
 import org.springframework.cloud.CloudFactory;
+import org.springframework.cloud.connector.nfs.NFSServiceInfo;
 import org.springframework.cloud.service.ServiceInfo;
 import org.springframework.cloud.service.common.*;
 import org.springframework.context.ApplicationContextInitializer;
@@ -20,6 +21,8 @@ public class SpringApplicationContextInitializer implements ApplicationContextIn
 
     private static final Map<Class<? extends ServiceInfo>, String> dataServiceTypeToProfileName = new HashMap<>();
     private static final List<String> validLocalDataProfiles = Arrays.asList("mysql", "postgres", "mongodb", "redis");
+
+    private static final Map<Class<? extends ServiceInfo>, String> storeServiceTypeToProfileName = new HashMap<>();
     private static final List<String> validLocalStoreProfiles = Arrays.asList("blob", "gridfs", "fs");
 
     public static final String IN_MEMORY_PROFILE = "in-memory";
@@ -32,6 +35,8 @@ public class SpringApplicationContextInitializer implements ApplicationContextIn
         dataServiceTypeToProfileName.put(RedisServiceInfo.class, "redis");
         dataServiceTypeToProfileName.put(OracleServiceInfo.class, "oracle");
         dataServiceTypeToProfileName.put(SqlServerServiceInfo.class, "sqlserver");
+
+        storeServiceTypeToProfileName.put(NFSServiceInfo.class, "nfs");
     }
 
     @Override
@@ -49,11 +54,14 @@ public class SpringApplicationContextInitializer implements ApplicationContextIn
 		Cloud cloud = getCloud();
 
         String[] persistenceProfiles = getCloudProfile(cloud);
+        logger.info(String.format("Cloud repository profiles: %s", (Object[])persistenceProfiles));
         if (persistenceProfiles == null) {
             persistenceProfiles = getActiveDataProfile(appEnvironment);
+            logger.info(String.format("Local repository profiles: %s", (Object[])persistenceProfiles));
         }
         if (persistenceProfiles == null) {
             persistenceProfiles = new String[] { IN_MEMORY_PROFILE };
+            logger.info(String.format("Default repository profiles: %s", (Object[])persistenceProfiles));
         }
         return Arrays.asList(persistenceProfiles);
 	}
@@ -61,13 +69,15 @@ public class SpringApplicationContextInitializer implements ApplicationContextIn
 	List<String> initializeStoreService(ConfigurableEnvironment appEnvironment) {
 		Cloud cloud = getCloud();
 
-//        String[] persistenceProfiles = getCloudProfile(cloud);
-//        if (persistenceProfiles == null) {
-//            persistenceProfiles = getActiveProfile(appEnvironment);
-//        }
-		String[] storeProfiles = getActiveStoreProfile(appEnvironment);
+        String[] storeProfiles = getCloudStoreProfile(cloud);
+        logger.info(String.format("Cloud store profiles: %s", (Object[])storeProfiles));
+        if (storeProfiles == null) {
+            storeProfiles = getActiveStoreProfile(appEnvironment);
+            logger.info(String.format("Local store profiles: %s", (Object[])storeProfiles));
+        }
         if (storeProfiles == null) {
             storeProfiles = new String[] { FILE_SYSTEM_PROFILE };
+            logger.info(String.format("Default store profiles: %s", (Object[])storeProfiles));
         }
         return Arrays.asList(storeProfiles);
 	}
@@ -93,6 +103,38 @@ public class SpringApplicationContextInitializer implements ApplicationContextIn
             throw new IllegalStateException(
                     "Only one service of the following types may be bound to this application: " +
                             dataServiceTypeToProfileName.values().toString() + ". " +
+                            "These services are bound to the application: [" +
+                            StringUtils.collectionToCommaDelimitedString(profiles) + "]");
+        }
+
+        if (profiles.size() > 0) {
+            return createProfileNames(profiles.get(0), "cloud");
+        }
+
+        return null;
+    }
+
+    public String[] getCloudStoreProfile(Cloud cloud) {
+        if (cloud == null) {
+            return null;
+        }
+
+        List<String> profiles = new ArrayList<>();
+
+        List<ServiceInfo> serviceInfos = cloud.getServiceInfos();
+
+        logger.info("Found serviceInfos: " + StringUtils.collectionToCommaDelimitedString(serviceInfos));
+
+        for (ServiceInfo serviceInfo : serviceInfos) {
+            if (storeServiceTypeToProfileName.containsKey(serviceInfo.getClass())) {
+                profiles.add(storeServiceTypeToProfileName.get(serviceInfo.getClass()));
+            }
+        }
+
+        if (profiles.size() > 1) {
+            throw new IllegalStateException(
+                    "Only one service of the following types may be bound to this application: " +
+                            storeServiceTypeToProfileName.values().toString() + ". " +
                             "These services are bound to the application: [" +
                             StringUtils.collectionToCommaDelimitedString(profiles) + "]");
         }

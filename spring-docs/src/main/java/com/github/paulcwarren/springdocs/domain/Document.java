@@ -9,16 +9,17 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.UUID;
 
 @Entity
 public class Document {
 	
     @Id
     @Column(length=40)
-    @GeneratedValue(generator="randomId")
-    @GenericGenerator(name="randomId", strategy="com.github.paulcwarren.springdocs.domain.RandomIdGenerator")
+//    @GeneratedValue(generator="randomId")
+//    @GenericGenerator(name="randomId", strategy="RandomIdGenerator")
 	@ContentId
-	private String id;
+	private String id = UUID.randomUUID().toString();
 	
 	private String title;
 	
