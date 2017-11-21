@@ -4,5 +4,5 @@ jdk:
   - oraclejdk8
 
 script:
- - mvn install -DskipTests=true
+ - mvn install
 
