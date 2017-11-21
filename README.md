@@ -1,5 +1,6 @@
 Spring Docs
 ===========
+<img src="https://travis-ci.org/paulcwarren/spring-docs.svg?branch=master"/>
 
 This is a sample application for using database and storage services with the [Spring Framework](http://spring.io).
 
