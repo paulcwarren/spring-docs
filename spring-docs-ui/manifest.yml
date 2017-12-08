@@ -1,0 +1,6 @@
+---
+applications:
+- name: spring-docs-ui
+  memory: 2GB
+  instances: 1
+  path: target/spring-docs-ui-0.0.1-SNAPSHOT.jar

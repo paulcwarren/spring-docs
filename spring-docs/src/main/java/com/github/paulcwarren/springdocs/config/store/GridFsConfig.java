@@ -14,7 +14,7 @@ public class GridFsConfig {
 
 	@Autowired private MongoDbFactory mongoDbFactory;
 	@Autowired private MongoConverter mongoConverter;
-	
+
 	@Bean
 	public GridFsTemplate gridFsTemplate() throws Exception {
 		return new GridFsTemplate(mongoDbFactory, mongoConverter);

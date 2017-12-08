@@ -7,7 +7,7 @@ import org.springframework.content.commons.search.Searchable;
 import org.springframework.content.rest.StoreRestResource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = {"http://spring-docs-ui.apps.mpivcf.com", "http://localhost:8080"})
 @StoreRestResource(path="documentscontent")
 public interface DocumentStore extends ContentStore<Document, String>, Searchable<String>, Renderable<String> {
 	//

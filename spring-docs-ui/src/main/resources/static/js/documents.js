@@ -19,6 +19,10 @@ springMusic.
     		return $resource('http://localhost:9090/documents').save(doc,
     			function(result) {
 		        	SpringDataRestAdapter.process(result).then(function(processedResponse) {
+		        	    if (processedResponse._links.documentscontent == undefined) {
+		        	        onSaveError({status: "500 (Missing 'documentscontent' href)"});
+		        	    }
+
 			        	var upload = Upload.upload(
 			                {url: processedResponse._links.documentscontent.href,
 			                 data: {file: doc.file},

@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import java.util.List;
 
 @Repository
-@Profile({"in-memory","msql","postgress","sqlserver"})
-@CrossOrigin(origins = "http://localhost:8080")
+@Profile({"in-memory","mysql","postgress","sqlserver"})
+@CrossOrigin(origins = {"http://spring-docs-ui.apps.mpivcf.com", "http://localhost:8080"})
+//@CrossOrigin(origins = )
 public interface JpaDocumentRepository extends JpaRepository<Document, String> {
 	
 	List<Document> findByTitle(@Param("title") String title);

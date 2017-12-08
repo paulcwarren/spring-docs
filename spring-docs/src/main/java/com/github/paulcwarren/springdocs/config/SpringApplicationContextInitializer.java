@@ -1,5 +1,6 @@
 package com.github.paulcwarren.springdocs.config;
 
+import com.emc.ecs.connector.S3ServiceInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.cloud.Cloud;
@@ -37,6 +38,7 @@ public class SpringApplicationContextInitializer implements ApplicationContextIn
         dataServiceTypeToProfileName.put(SqlServerServiceInfo.class, "sqlserver");
 
         storeServiceTypeToProfileName.put(NFSServiceInfo.class, "nfs");
+        storeServiceTypeToProfileName.put(S3ServiceInfo.class, "ecs");
     }
 
     @Override

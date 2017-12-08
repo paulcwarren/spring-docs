@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 @Profile("mongodb")
 @CrossOrigin(origins = "http://localhost:8080")
-public interface MongoDocumentRepository extends MongoRepository<Document, String> {
+public interface MongoDocumentRepository extends MongoRepository<Document, String>  {
 	
 	List<Document> findByTitle(@Param("title") String title);
 	

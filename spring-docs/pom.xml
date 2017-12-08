@@ -137,6 +137,21 @@
 			<artifactId>spring-cloud-nfs-connector-cloudfoundry</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.emc.ecs</groupId>
+			<artifactId>spring-cloud-ecs-connector</artifactId>
+			<version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.amazonaws</groupId>
+                    <artifactId>aws-java-sdk-s3</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.amazonaws</groupId>
+                    <artifactId>aws-java-sdk-core</artifactId>
+                </exclusion>
+            </exclusions>
+		</dependency>
 
 		<dependency>
 			<groupId>com.github.paulcwarren</groupId>
@@ -176,5 +191,4 @@
 			</snapshots>
 		</repository>
 	</repositories>
-
 </project>

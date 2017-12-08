@@ -13,7 +13,7 @@ public class MongoLocalConfig {
 
     @Bean
     public MongoDbFactory mongoDbFactory() {
-        return new SimpleMongoDbFactory(new MongoClient(), "spring-docs");
+        return new SimpleMongoDbFactory(new MongoClient(), "docs");
     }
 
 }

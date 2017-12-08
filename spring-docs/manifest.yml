@@ -1,0 +1,12 @@
+---
+applications:
+- name: spring-docs
+  memory: 2GB
+  instances: 1
+  path: target/spring-docs-0.0.1-SNAPSHOT.jar
+  env:
+    ECS_URL: http://bosh-namespace.104.198.74.94.xip.io:9020
+    ECS_ACCESS_KEY: spring-docs-user
+    ECS_SECRET_KEY: LGItlw+Sf2o6JigtsPEpl9sQ5+eOOGyQxw34W/pt
+    AWS_BUCKET: spring-docs
+    SPRING_PROFILES_ACTIVE: mysql-cloud,ecs
