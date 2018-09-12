@@ -2,6 +2,12 @@ package com.github.paulcwarren.springdocs;
 
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jSpringRunner;
 import com.github.paulcwarren.springdocs.repositories.jpa.JpaDocumentRepository;
+import com.google.cloud.language.v1.ClassificationCategory;
+import com.google.cloud.language.v1.ClassifyTextRequest;
+import com.google.cloud.language.v1.ClassifyTextResponse;
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.LanguageServiceClient;
+import com.google.cloud.language.v1.Sentiment;
 import com.jayway.restassured.RestAssured;
 import org.apache.http.HttpStatus;
 import org.junit.Test;
@@ -9,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+import java.util.List;
 
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.*;
 import static com.jayway.restassured.RestAssured.given;
@@ -79,6 +87,31 @@ public class SpringDocsApplicationTests {
                             .header("Content-Type", is("image/jpeg"));
                     });
                 });
+            });
+        });
+
+        Describe("GCP Natural Language API", () -> {
+            FIt("should do somehting", () -> {
+                // Instantiates a client
+                try (LanguageServiceClient language = LanguageServiceClient.create()) {
+                    String text = "San Francisco police say three students have been taken into custody after a report of a gun on campus at Balboa High School. Police say that one person has sustained non-life threatening injuries during the incident and a firearm has been recovered.";
+
+                    // set content to the text string
+                    Document doc = Document.newBuilder()
+                            .setContent(text)
+                            .setType(Document.Type.PLAIN_TEXT)
+                            .build();
+                    ClassifyTextRequest request = ClassifyTextRequest.newBuilder()
+                            .setDocument(doc)
+                            .build();
+                    // detect categories in the given text
+                    ClassifyTextResponse response = language.classifyText(request);
+
+                    for (ClassificationCategory category : response.getCategoriesList()) {
+                        System.out.printf("Category name : %s, Confidence : %.3f\n",
+                                category.getName(), category.getConfidence());
+                    }
+                }
             });
         });
     }

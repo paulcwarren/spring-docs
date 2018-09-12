@@ -7,6 +7,7 @@
 	            <span> [ view as: </span>
 	            <a href="" ng-click="setAlbumsView('grid')"><span class="glyphicon glyphicon-th"></span></a>
 	            <a href="" ng-click="setAlbumsView('list')"><span class="glyphicon glyphicon-th-list"></span></a>
+				<a href="" ng-click="setAlbumsView('cats')"><span class="glyphicon glyphicon-th-large"></span></a>
 	            <span> | sort by: </span>
 	            <a href="" ng-click="sortField='title'">title</a>
 	            <a href="" ng-click="sortField='author'">author</a>
@@ -21,8 +22,8 @@
 	  	<div class="col-md-2">
             <div style="float:right; margin: 10px 0px 10px 10px;" 
             	ngf-drop="uploadFiles($files)" class="drop-box"
-			  	ngf-drag-over-class="{pattern: 'application/*', accept:'dragover', reject:'dragover-err', delay:100}" 
-			  	ngf-pattern="'.docx'"
+			  	ngf-drag-over-class="{pattern: 'application/*,text/plain', accept:'dragover', reject:'dragover-err', delay:100}"
+			  	ngf-pattern="'*.docx,*.txt,*.pdf'"
 			  	ngf-multiple=true
 			 	>Drop zone</div>
 			<div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>

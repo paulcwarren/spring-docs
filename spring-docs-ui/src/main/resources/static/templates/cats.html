@@ -1,0 +1,40 @@
+<div class="col-xs-12">
+    <div id="breadcrumb">
+        <span>
+            <a ng-click="navigate([])">Home</a>
+        </span>
+        <span ng-repeat="crumb in breadcrumb track by $index">
+            <a ng-click="navigate(breadcrumb.slice(0, $index + 1))">{{crumb}}</a>
+        </span>
+    </div>
+</div>
+
+<div class="col-xs-12">
+    <div id="categories">
+        <h4>Categories</h4>
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3" ng-repeat="(key, value) in catsHead">
+            <div class="thumbnail">
+                <div class="caption">
+                    <div ng-click="breadcrumb.push(key); navigate(breadcrumb)">{{key}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xs-12">
+    <div id="docs">
+        <h4>Documents</h4>
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3" ng-repeat="doc in docsForCat(breadcrumb)">
+            <div class="thumbnail">
+                <div class="caption">
+                    <div ng-click="">{{doc.title}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<div ng-repeat="(key, value) in catsHead">-->
+    <!--<div ng-click="breadcrumb.push(key); navigate(breadcrumb)" style="height:100%; width:100%">{{key}}</div>-->
+<!--</div>-->

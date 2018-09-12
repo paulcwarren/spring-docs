@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.6.RELEASE</version>
+		<version>2.0.3.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -23,7 +23,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<spring.cloud.connectors.version>1.2.4.RELEASE</spring.cloud.connectors.version>
-		<spring.content.version>0.0.11</spring.content.version>
+		<spring.content.version>0.3.0-SNAPSHOT</spring.content.version>
 	</properties>
 
 	<dependencies>
@@ -57,9 +57,10 @@
     		<groupId>org.springframework.cloud</groupId>
     		<artifactId>spring-cloud-cloudfoundry-connector</artifactId>
     	</dependency>
-    	<dependency>
+		<dependency>
     		<groupId>commons-dbcp</groupId>
     		<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
     	</dependency>
     	<dependency>
     		<groupId>com.h2database</groupId>
@@ -117,7 +118,7 @@
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-solrj</artifactId>
-            <version>6.2.1</version>
+            <version>7.2.1</version>
             <exclusions>
 		    	<exclusion>
 		    		<groupId>com.google.guava</groupId>
@@ -151,6 +152,13 @@
                     <artifactId>aws-java-sdk-core</artifactId>
                 </exclusion>
             </exclusions>
+		</dependency>
+
+		<!-- GCP Natural Language APIs -->
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-language</artifactId>
+			<version>1.40.0</version>
 		</dependency>
 
 		<dependency>

@@ -135,9 +135,41 @@ springMusic.
 		function list() {
 			Documents.getAllDocuments().then(function(results) {
 			   $rootScope.docs = results;
+			   var ref = {cats: {}, catDocMap: {}};
+			   categories(results, ref);
+//                 $rootScope.cats = {"Something": {"Else": {}}, "Other": {}};
+			   $rootScope.cats = ref.cats;
+			   $rootScope.catsDocs = ref.catDocMap;
+               alert("cats " + JSON.stringify($rootScope.cats));
+               alert("catsDocs " + JSON.stringify($rootScope.catsDocs));
+			   $rootScope.catsHead = $rootScope.cats;
+			   $scope.breadcrumb = [];
 			});
 	    }
-	
+
+	    function categories (docs, ref) {
+	        for (var i = 0; i < docs.length; i++) {
+               for (var j=0; j < docs[i].categories.length; j++) {
+                  var head = ref.cats;
+                  var elements = docs[i].categories[j].split("/");
+                  for (var e = 0; e < elements.length; e++) {
+                     var element = elements[e];
+                     if (element === "") {
+                        continue;
+                     }
+                     if (!(element in head)) {
+                        head[element] = {};
+                     }
+                     head = head[element];
+                  }
+                  if (!(element in ref.catDocMap)) {
+                    ref.catDocMap[element] = [];
+                  }
+                  ref.catDocMap[element].push(docs[i]);
+               }
+            }
+	    }
+
 	    function clone (obj) {
 	        return JSON.parse(JSON.stringify(obj));
 	    }
@@ -153,7 +185,23 @@ springMusic.
         function onSaveError(result) {
             Status.error("Error saving document: " + result.status);
         }
-	  	
+
+        // categories
+
+        $scope.navigate = function (breadcrumb) {
+            $scope.breadcrumb = breadcrumb;
+            $rootScope.catsHead = $rootScope.cats;
+            for (var i=0; i < breadcrumb.length; i++) {
+                $rootScope.catsHead = $rootScope.catsHead[breadcrumb[i]];
+            }
+        }
+
+        $scope.docsForCat = function(breadcrumb) {
+            return $rootScope.catsDocs[breadcrumb[breadcrumb.length-1]];
+        }
+
+        // end categories
+
 	    $scope.addDocument = function () {
 	        var addModal = $uibModal.open({
 	            templateUrl: 'templates/documentForm.html',

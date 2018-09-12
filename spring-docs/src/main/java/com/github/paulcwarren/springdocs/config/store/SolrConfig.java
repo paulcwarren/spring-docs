@@ -6,12 +6,12 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 //@Profile("solr")
-@EnableSolrEmbedded
+//@EnableSolrEmbedded
 public class SolrConfig {
 
     public SolrProperties solrProperties() {
         SolrProperties solrConfig =  new SolrProperties();
-        solrConfig.setUrl("http://localhost:8080/solr/solr");
+        solrConfig.setUrl("http://localhost:983/solr/solr");
         return solrConfig;
     }
 
