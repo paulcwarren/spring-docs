@@ -93,10 +93,8 @@ springMusic.
 
     		$http({method: 'DELETE', url: doc._links.documentscontent.href, data: '', headers: {'Accept': doc.mimeType, 'Content-Type': doc.mimeType}})
     				.success(function(response) {
-    					console.log("1");
 			    		$http.delete(doc._links.self.href)
 			    			.success(function(response) {
-		    					console.log("2");
 		    					def.resolve(response);
 			    			})
 			    			.error(function(response) {
@@ -109,6 +107,97 @@ springMusic.
 
     		return def.promise;
     	}
+
+    	this.lock = function lock(doc) {
+    		var def = $q.defer();
+			var headers = {};
+			headers["Accept"] = doc.mimeType;
+			headers["Content-Type"] = doc.mimeType;
+
+    		$http({method: 'PUT', url: doc._links.document.href + "/lock", data: '', headers: headers})
+    				.success(function(response) {
+		    			def.resolve(response);
+					})
+    				.error(function(response) {
+						def.reject(response);
+    				});
+
+    		return def.promise;
+    	}
+
+    	this.unlock = function unlock(doc) {
+    		var def = $q.defer();
+
+    		$http({method: 'DELETE', url: doc._links.document.href + "/lock", data: ''})
+    				.success(function(response) {
+		    			def.resolve(response);
+					})
+    				.error(function(response) {
+						def.reject(response);
+    				});
+
+    		return def.promise;
+    	}
+
+
+		this.version = function version(doc, versionData) {
+
+			var def = $q.defer();
+			var url = doc.id + '/version';
+
+			$http.put(url, versionData)
+				.success(function(response) {
+					def.resolve(response);
+				})
+				.error(function(response) {
+					def.reject(response);
+				});
+
+			return def.promise;
+		}
+
+		this.uploadVersion = function uploadVersion(doc, versionData) {
+			var def = $q.defer();
+			var url = doc.id + '/version';
+
+			$http.put(url, versionData)
+				.success(function(response) {
+
+					var versionDoc = response;
+					versionDoc.id = versionDoc._links.document.href;
+					versionDoc.file = doc.file;
+
+					if (versionDoc.versionNumber && doc.file) {
+						doc._links = versionDoc._links;
+						var upload = Upload.upload(
+							{
+								url: doc._links.documentscontent.href,
+								data: {file: doc.file}
+							});
+						upload.then(function (response) {
+							$timeout(function () {
+								def.resolve(response);
+							});
+						}, function (response) {
+							$timeout(function () {
+								def.reject(response);
+							});
+						});
+					} else {
+						$timeout(function () {
+							def.resolve(response);
+						});
+					}
+				})
+				.error(function (response) {
+					$timeout(function () {
+						def.resolve(response);
+					});
+				});
+
+			return def.promise;
+		}
+
     }).
     service("EditorStatus", function () {
         var editorEnabled = {};
@@ -140,35 +229,40 @@ springMusic.
 //                 $rootScope.cats = {"Something": {"Else": {}}, "Other": {}};
 			   $rootScope.cats = ref.cats;
 			   $rootScope.catsDocs = ref.catDocMap;
-               alert("cats " + JSON.stringify($rootScope.cats));
-               alert("catsDocs " + JSON.stringify($rootScope.catsDocs));
+//               alert("cats " + JSON.stringify($rootScope.cats));
+//               alert("catsDocs " + JSON.stringify($rootScope.catsDocs));
 			   $rootScope.catsHead = $rootScope.cats;
 			   $scope.breadcrumb = [];
 			});
 	    }
 
-	    function categories (docs, ref) {
-	        for (var i = 0; i < docs.length; i++) {
-               for (var j=0; j < docs[i].categories.length; j++) {
-                  var head = ref.cats;
-                  var elements = docs[i].categories[j].split("/");
-                  for (var e = 0; e < elements.length; e++) {
-                     var element = elements[e];
-                     if (element === "") {
-                        continue;
-                     }
-                     if (!(element in head)) {
-                        head[element] = {};
-                     }
-                     head = head[element];
-                  }
-                  if (!(element in ref.catDocMap)) {
-                    ref.catDocMap[element] = [];
-                  }
-                  ref.catDocMap[element].push(docs[i]);
-               }
-            }
-	    }
+		function categories (docs, ref) {
+			for (var i = 0; i < docs.length; i++) {
+				if (docs[i].categories && docs[i].categories.length) {
+					for (var j=0; j < docs[i].categories.length; j++) {
+						var head = ref.cats;
+						var elements = docs[i].categories[j].split("/");
+						if (elements && elements.length) {
+							for (var e = 0; e < elements.length; e++) {
+								var element = elements[e];
+								if (element === "") {
+									continue;
+								}
+								if (!(element in head)) {
+									head[element] = {};
+								}
+								head = head[element];
+							}
+						}
+						if (!(element in ref.catDocMap)) {
+							ref.catDocMap[element] = [];
+						}
+						ref.catDocMap[element].push(docs[i]);
+
+					}
+				}
+			}
+		}
 
 	    function clone (obj) {
 	        return JSON.parse(JSON.stringify(obj));
@@ -217,6 +311,11 @@ springMusic.
 	        });
 	
 	        addModal.result.then(function (doc) {
+
+				if (!doc.versionNumber) {
+					doc.versionNumber = "1";
+				}
+
 		        Documents.save(doc,
 		            onContentUploadSuccess,
 		            onSaveError
@@ -261,10 +360,93 @@ springMusic.
 			    	}, 1);
 		        })
 	            .catch(function (result) {
-	                Status.error("Error deleting document: " + result.status);
+	                Status.error("Error deleting document: " + ((result) ?  result.status : ""));
 	            });
 	    };
-	
+
+	    $scope.lockDocument = function (doc) {
+	        Document.lock(doc)
+	            .then(function (result) {
+	                Status.success("Document locked");
+			    	$timeout(function() {
+		                list();
+			    	}, 1);
+		        })
+	            .catch(function (result) {
+					console.log(result);
+	                Status.error("Error locking document: " + ((result) ?  result.status : ""));
+	            });
+	    };
+
+	    $scope.unlockDocument = function (doc) {
+	        Document.unlock(doc)
+	            .then(function (result) {
+	                Status.success("Document unlocked");
+			    	$timeout(function() {
+		                list();
+			    	}, 1);
+		        })
+	            .catch(function (result) {
+	                Status.error("Error unlocking document: " + ((result) ?  result.status : ""));
+	            });
+	    };
+
+		$scope.versionDocument = function (doc) {
+
+			var versionData = {};
+			versionData['version_number'] = (+ doc.versionNumber) +1;
+			versionData['version_label'] = "next version " + versionData.number;
+
+			Document.version(doc, versionData)
+				.then(function (result) {
+					Status.success("Document version created");
+					$timeout(function() {
+						list();
+					}, 1);
+				})
+				.catch(function (result) {
+					Status.error("Error versioning document: " + ((result) ?  result.status : ""));
+				});
+		};
+
+
+	    $scope.uploadDocumentVersion = function (doc) {
+
+			var uploadDocumentVersion = $uibModal.open({
+				templateUrl: 'templates/versionForm.html',
+				controller: 'DocumentVersionController',
+				resolve: {
+					doc: function() {
+						return clone(doc);
+					},
+					action: function() {
+						return 'upload';
+					}
+				}
+			});
+
+			uploadDocumentVersion.result.then(function (doc) {
+
+				var versionData = {};
+				versionData['number'] = doc.versionNumber;
+				versionData['label'] = doc.versionLabel;
+
+				Document.uploadVersion(doc, versionData)
+					.then(function (result) {
+						Status.success("Uploaded Document version");
+						$timeout(function () {
+							list();
+						}, 1);
+					})
+					.catch(function (result) {
+						Status.error("Error uploading Document version: " + JSON.stringify(result));
+					});
+			});
+
+
+	    };
+
+
 	    $scope.setAlbumsView = function (viewName) {
 	        $scope.albumsView = "templates/" + viewName + ".html";
 	    };
@@ -276,6 +458,11 @@ springMusic.
 	            	'title': files[i].name,
 	            	'file': files[i]
 	            };
+
+				if (!doc.versionNumber) {
+					doc.versionNumber = "1";
+				}
+
 	            Documents.save(doc, onContentUploadSuccess, onSaveError);
 	          }
 	        }
@@ -339,6 +526,26 @@ springMusic.
 	    };
 	
 	    $scope.disableEditor();
+	}])
+
+	.controller('DocumentVersionController', ['$scope', '$uibModalInstance', 'doc', 'action', function ($scope, $uibModalInstance, doc, action) {
+		$scope.docAction = action;
+		$scope.doc = doc;
+
+		$scope.doc.versionNumber = (+ doc.versionNumber) +1;
+		$scope.doc.versionLabel = "";
+
+		$scope.validateFile = function(file) {
+			return true;
+		};
+
+		$scope.ok = function () {
+			$uibModalInstance.close($scope.doc);
+		};
+
+		$scope.cancel = function () {
+			$uibModalInstance.dismiss('cancel');
+		};
 	}]);
 
 angular.module('SpringMusic').

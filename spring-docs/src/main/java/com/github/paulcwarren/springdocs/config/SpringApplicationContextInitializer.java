@@ -21,7 +21,7 @@ public class SpringApplicationContextInitializer implements ApplicationContextIn
     private static final Log logger = LogFactory.getLog(SpringApplicationContextInitializer.class);
 
     private static final Map<Class<? extends ServiceInfo>, String> dataServiceTypeToProfileName = new HashMap<>();
-    private static final List<String> validLocalDataProfiles = Arrays.asList("mysql", "postgres", "mongodb", "redis");
+    private static final List<String> validLocalDataProfiles = Arrays.asList("mysql", "postgres-local", "mongodb", "redis");
 
     private static final Map<Class<? extends ServiceInfo>, String> storeServiceTypeToProfileName = new HashMap<>();
     private static final List<String> validLocalStoreProfiles = Arrays.asList("blob", "gridfs", "fs");
