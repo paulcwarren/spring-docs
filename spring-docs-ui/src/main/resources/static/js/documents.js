@@ -394,8 +394,8 @@ springMusic.
 		$scope.versionDocument = function (doc) {
 
 			var versionData = {};
-			versionData['version_number'] = (+ doc.versionNumber) +1;
-			versionData['version_label'] = "next version " + versionData.number;
+			versionData['number'] = (+ doc.versionNumber) +1;
+			versionData['label'] = "next version " + versionData.number;
 
 			Document.version(doc, versionData)
 				.then(function (result) {
