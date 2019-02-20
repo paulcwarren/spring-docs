@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableJpaRepositories(basePackages = {"com.github.paulcwarren.springdocs.repositories.jpa"})
 @EntityScan(basePackages="com.github.paulcwarren.springdocs.domain")
-@Profile("postgres-local")
+@Profile("postgres")
 public class PostgresLocalDataSourceConfig extends AbstractLocalDataSourceConfig {
 
     @Bean

@@ -27,7 +27,9 @@ import static org.hamcrest.core.Is.is;
 @RunWith(Ginkgo4jSpringRunner.class)
 @SpringBootTest(
         classes = SpringDocsApplication.class,
-        properties={"spring.profiles.active=in-memory,fs"},
+        properties={"spring.profiles.active=in-memory,fs",
+        			"spring.jpa.properties.hibernate.temp.use_jdbc_metadata_default=false",
+        			"spring.jpa.database-platform=org.hibernate.dialect.H2Dialect"},
         webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @EnableJpaRepositories(basePackageClasses = JpaDocumentRepository.class)

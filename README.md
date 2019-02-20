@@ -28,6 +28,7 @@ where `<database profile>` is one of the following values:
 * `mysql`
 * `postgres`
 * `mongodb`
+* `mongodb-local`
 * `redis`
 
 If no database profile is provided, `in-memory` will be used. If any other profile is provided, the appropriate database server
@@ -37,12 +38,12 @@ If more than one of these database profiles are provided, the application will t
 
 and where `<storage profile>` is one of the following values:
 
-* `filesystem` (no external storage required)
+* `fs` (no external storage required)
 * `gridfs`
 * `s3`			TBD
 * `blob`		TBD
 
-Likewise, if no storage profile is provided, `filesystem` will be used. If any other profile is provided, the appropriate storage server
+Likewise, if no storage profile is provided, `fs` will be used. If any other profile is provided, the appropriate storage server
 must be started separately. The application will use the host name `localhost` and the default port to connect to the storage.
 
 If more than one of these storage profiles are provided, the application will throw an exception and fail to start.

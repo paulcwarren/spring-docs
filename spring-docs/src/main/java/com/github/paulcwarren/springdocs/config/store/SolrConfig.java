@@ -1,12 +1,14 @@
 package com.github.paulcwarren.springdocs.config.store;
 
-import com.github.paulcwarren.solr.EnableSolrEmbedded;
 import org.springframework.content.solr.SolrProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+
+import com.github.paulcwarren.solr.EnableSolrEmbedded;
 
 @Configuration
-//@Profile("solr")
-//@EnableSolrEmbedded
+@Profile("solr")
+@EnableSolrEmbedded
 public class SolrConfig {
 
     public SolrProperties solrProperties() {
@@ -15,4 +17,4 @@ public class SolrConfig {
         return solrConfig;
     }
 
-}	
+}
