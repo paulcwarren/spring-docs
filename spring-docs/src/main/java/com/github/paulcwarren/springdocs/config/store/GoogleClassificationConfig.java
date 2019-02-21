@@ -28,6 +28,11 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
+/**
+ * Requires:
+ *  - google private key json file and GOOGLE_APPLICATION_CREDENTIALS environment variable
+ *  - application to be run with `google-classification` added to the set of active profiles
+ */
 @Configuration
 @Profile("google-classification")
 public class GoogleClassificationConfig {
