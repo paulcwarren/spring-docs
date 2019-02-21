@@ -2,35 +2,40 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Title</th>
-            <th>Artist</th>
-            <th>Year</th>
-            <th>Genre</th>
             <th></th>
+            <th>Title</th>
+            <th>Version Number</th>
+            <th>Version Label</th>
+            <th>Author</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="doc in docs | orderBy:sortField:sortDescending">
-            <td>
-                <in-place-edit field-name='title' input-type='text' input-class='input-large' model=doc>{{doc.title}}</in-place-edit>
-            </td>
-            <td>
-                <in-place-edit field-name='artist' input-type='artist' input-class='input-large' model=doc>{{doc.artist}}</in-place-edit>
-            </td>
-            <td>
-                <in-place-edit field-name='releaseYear' input-type='text' input-class='input-small' model=doc>{{doc.releaseYear}}</in-place-edit>
-            </td>
-            <td>
-                <in-place-edit field-name='genre' input-type='text' input-class='input-medium' model=doc>{{doc.genre}}</in-place-edit>
-            </td>
             <td class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-cog"></span>
+                    <span class="glyphicon glyphicon-cog" font-size:50px;></span>
                 </a>
+                <span ng-if="doc.lockOwner" class="glyphicon glyphicon-lock" title="{{doc.lockOwner}}"></span>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                    <li role="presentation"><a ng-click="updateAlbum(doc)">edit</a></li>
-                    <li role="presentation"><a ng-click="deleteAlbum(doc)">delete</a></li>
+                    <li role="presentation" ng-if="!doc.lockOwner"><a ng-click="lockDocument(doc)">Lock</a></li>
+                    <li role="presentation" ng-if="doc.lockOwner"><a ng-click="unlockDocument(doc)">Unlock</a></li>
+                    <li role="presentation" ng-if="doc.lockOwner"><a ng-click="updateDocument(doc)">Update Document</a></li>
+                    <li role="presentation" ng-if="doc.lockOwner && !doc.successorId"><a ng-click="uploadDocumentVersion(doc)">Upload Document Version</a></li>
+                    <li role="presentation" ng-if="doc.lockOwner && !doc.successorId"><a ng-click="versionDocument(doc)">Version Document</a></li>
+                    <li role="presentation"><a ng-click="deleteDocument(doc)">Delete</a></li>
                 </ul>
+            </td>
+            <td>
+                <span>{{doc.title}}</span>
+            </td>
+            <td>
+                <span><a href="{{doc._links.documentscontent.href}}">{{doc.versionNumber}}</a></span>
+            </td>
+            <td>
+                <span>{{doc.versionLabel}}</span>
+            </td>
+           <td>
+                <span>{{doc.author}}</span>
             </td>
         </tr>
         </tbody>
