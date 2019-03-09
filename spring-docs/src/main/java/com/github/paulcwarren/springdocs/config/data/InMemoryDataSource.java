@@ -9,11 +9,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import javax.sql.DataSource;
-
 @Configuration
 @EnableAutoConfiguration(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
-@EnableJpaRepositories(basePackages = {"com.github.paulcwarren.springdocs.repositories.jpa"})
+@EnableJpaRepositories(basePackages = {"com.github.paulcwarren.springdocs.repositories.jpa", "org.springframework.versions"})
 @EntityScan(basePackages="com.github.paulcwarren.springdocs.domain")
 @Profile("in-memory")
 public class InMemoryDataSource extends AbstractLocalDataSourceConfig {

@@ -26,7 +26,6 @@ import static org.hamcrest.core.Is.is;
         			"spring.jpa.database-platform=org.hibernate.dialect.H2Dialect"},
         webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-@EnableJpaRepositories(basePackageClasses = JpaDocumentRepository.class)
 public class SpringDocsApplicationTests {
 
 	@Value("${local.server.port}")
