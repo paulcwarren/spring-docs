@@ -1,5 +1,7 @@
 package com.github.paulcwarren.springdocs.config.data;
 
+import javax.sql.DataSource;
+
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
