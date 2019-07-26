@@ -1,22 +1,32 @@
+var springDocsUrl = "http://localhost:9090/";
+
 var springMusic = angular.module('SpringMusic');
 springMusic.
     service('Documents', function ($resource, $http, SpringDataRestAdapter, Upload, $timeout) {
+
+        this.url = function(path) {
+            return springDocsUrl + path;
+        }
+
     	this.getAllDocuments = function getAllDocuments() {
+    	    var allDocsUrl = this.url("documents");
     	    return this.unwrap($http({
     	        method : 'GET',
-    	        url : 'http://localhost:9090/documents'
+    	        url : allDocsUrl
     	    }));
     	}
     	
     	this.searchContent = function searchContent(keyword) {
+    	    searchContentUrl = this.url("documents/searchContent/findKeyword?keyword=" + keyword);
     	    return this.unwrap($http({
     	        method : 'GET',
-    	        url : 'http://localhost:9090/documents/searchContent/findKeyword?keyword=' + keyword
+    	        url : searchContentUrl
     	    }));
     	}
 
     	this.save = function save(doc, onSaveSuccess, onSaveError) {
-    		return $resource('http://localhost:9090/documents').save(doc,
+    	    resourceUrl = this.url("documents");
+    		return $resource(resourceUrl).save(doc,
     			function(result) {
 		        	SpringDataRestAdapter.process(result).then(function(processedResponse) {
 		        	    if (processedResponse._links.documentscontent == undefined) {
