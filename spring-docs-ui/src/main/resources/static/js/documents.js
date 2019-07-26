@@ -114,7 +114,7 @@ springMusic.
 			headers["Accept"] = doc.mimeType;
 			headers["Content-Type"] = doc.mimeType;
 
-    		$http({method: 'PUT', url: doc._links.document.href + "/lock", data: '', headers: headers})
+    		$http({method: 'PUT', url: doc._links.self.href + "/lock", data: '', headers: headers})
     				.success(function(response) {
 		    			def.resolve(response);
 					})
@@ -128,7 +128,7 @@ springMusic.
     	this.unlock = function unlock(doc) {
     		var def = $q.defer();
 
-    		$http({method: 'DELETE', url: doc._links.document.href + "/lock", data: ''})
+    		$http({method: 'DELETE', url: doc._links.self.href + "/lock", data: ''})
     				.success(function(response) {
 		    			def.resolve(response);
 					})
@@ -164,7 +164,7 @@ springMusic.
 				.success(function(response) {
 
 					var versionDoc = response;
-					versionDoc.id = versionDoc._links.document.href;
+					versionDoc.id = versionDoc._links.self.href;
 					versionDoc.file = doc.file;
 
 					if (versionDoc.versionNumber && doc.file) {
