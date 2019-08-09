@@ -4,62 +4,96 @@ Spring Docs
 
 This is a sample application for using database and storage services with the [Spring Framework](http://spring.io).
 
-This application has been built as a sample Content Service.  It is designed around the 3 central tenets of a Content Management System; content, content metadata and content search.  The design comprises of a domain object that provides metadata around a piece content.  The application exposes REST endpoints for performing CRUD operations on domain objects, for associating content with those domain object, for rendering images from the original content and for searching for domain objects based on text their content may contain.    
+The application comprises of two services; `spring-docs-ui`, a UI service backed by `spring-docs`, a content service.
 
-The domain object is persisted in one of a variety of different databases - relational, document, and key-value stores.  Uploaded documents associated with those domain objects and stored in a variety of different stores - file, object, BLOBs or Mongo's GridFS - and also indexed using Apache Solr allowing searches "inside" those documents (also known as a fulltext search).  Whilst this is a realistic data model for an Content Service it is not meant to represent a realistic use case for these technologies, since you would typically choose the database and storage service most applicable to the type of data and content you need to store, but it is useful for testing and experimenting with different types of services. 
+The content service is designed around the 3 central tenets of an Enterprise Content Management System (ECMS); content, content metadata and content search.  A Spring Data Entity `Document` is 
+both a target to we can associate content, and a model of the metadata for each piece of associated content.  A Spring Data Repository provides a REST api for
+creating, reading, updating and deleting instances of `Document`.  A Spring Content Store provides a REST api for creating, updating and deleting content, for associating it with an 
+instance of `Document` and for searching "inside" the content.  Lastly, a fragment is also applied to the Spring Data Repository that adds a REST api for performing pessimistic locking and 
+versioning of instances of `Document`.  A feature that is commonly found in ECMS.
 
-The application uses Spring Java configuration and [bean profiles](https://spring.io/blog/2011/02/14/spring-3-1-m1-introducing-profile/) to configure the application and the connection objects needed to use the database and storage service.
-
-The application is run as two separate microservices.  spring-docs provides a Spring Boot, Spring Data and Spring Content backend service.  spring-docs-ui provides an angularjs 1.x based user interface. 
-
-## Running the application locally
-
-One Spring bean profile should be activated to choose the database provider that the application should use and another to choose the storage provider. These two profiles are selected by setting the system property `spring.profiles.active` when starting the app.
+For the meta-model, the content service can be configured to persist to a variety of different databases; either relational or document-based.  For content, the content service can be 
+configured to persist to a variety of different stores; file, object, BLOB or Mongo's GridFS.  For search, the content service should be configured to run against Apache Solr.  Profiles
+are used to configure these various services, as explained below.
+ 
+## Running the Content Service
 
 The Content Service can be started locally using the following command:
 
 ~~~
-~/spring-docs/spring-docs/$ mvn spring-boot:run -Dspring.profiles.active=<database profile, storage profile [, google-classification]>
+~/spring-docs/spring-docs/$ mvn spring-boot:run [-Dspring.profiles.active=<database profile>, <storage profile> [, google-classification]]
 ~~~
 
-where `<database profile>` is one of the following values:
+### Database Profiles
+
+One of the following values:
 
 * `in-memory` (no external database required)
 * `mysql`
 * `postgres`
+* `sqlserver`
 * `mongodb`
-* `mongodb-local`
-* `redis`
 
-If no database profile is provided, `in-memory` will be used. If any other profile is provided, the appropriate database server
-must be started separately. The application will use the host name `localhost` and the default port to connect to the database.
+If no database profile is provided, `in-memory` will be used.  If any other profile is provided, the appropriate database server
+must be started separately.
+
+#### Configuring Database Connections
+
+For `mysql`, `postgres` and `sqlserver` you can specify the environment variables; `SPRINGDOCS_DS_URL`, `SPRINGDOCS_DS_USERNAME` and `SPRINGDOCS_DS_PASSWORD`.  `SPRINGDOCS_DS_URL`
+should be a correctly formatted jdbc connection string for the relevant database.
+
+For `mongodb` you can specify `SPRINGDOCS_MDB_URL` with a correctly formatted jdbc connection string for the MongoDB database.
+
+If connection variables are ommited the content service will attempt to connect to a "localhost" server and a database called `springdocs`. 
 
 If more than one of these database profiles are provided, the application will throw an exception and fail to start.
 
-and where `<storage profile>` is one of the following values:
+### Storage Profiles
+
+One of the following values:
 
 * `fs` (no external storage required)
+* `blob` 
+* `s3`
 * `gridfs`
-* `s3`			TBD
-* `blob`		TBD
 
-Likewise, if no storage profile is provided, `fs` will be used. If any other profile is provided, the appropriate storage server
-must be started separately. The application will use the host name `localhost` and the default port to connect to the storage.
+If no storage profile is provided, `fs` will be used. If any other profile is provided, the appropriate storage server must be started separately. 
+
+`blob` should be used in conjuction with `mysql`, `postgres` or `sqlserver`.  See "Configuraing Database Connections".
+
+For `s3` you must specify the environment variables; `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_KEY` and `AWS_BUCKET`
+
+`gridfs` is used in conjunction with `mongodb`.  See "Configuring Database Connections".
 
 If more than one of these storage profiles are provided, the application will throw an exception and fail to start.
 
-Document classification can be enabled by adding the `google-classification` to the set of active profiles.  This will
-require the following:-
+### Search Profiles
+
+You can specify the environment variable `SPRINGDOCS_SOLR_URL` to specify the URL of your Apache Solr instance.  If omitted the content service will attempt to connect to 
+`http://localhost:8983/solr/solr`.
+
+### Classification Profiles
+
+Document classification can be enabled by adding the `google-classification` to the set of active profiles.  This will require the following:-
  - google private key json file and GOOGLE_APPLICATION_CREDENTIALS environment variable set with the path to this file
  - application to be run with `google-classification` added to the set of active profiles
 
-An embedded solr instance is enabled by default.  Each uploaded document will be fulltext indexed.  Entering keywords
-into the search box will trigger a fulltext query; i.e. it will search inside the documents for matches.
+### CORS
 
-The user interface service can be started locally using the following command:
+By default the application is configured to allow any client to connect.  You can specify the environment variable `SPRINGDOCS_ALLOW_HOST` to specify the host to allow, restricting
+all others.
+
+## Running the UI Service
+
+The user interface service can be started using the following command:
 
 ~~~
 ~/spring-docs/spring-docs-ui/$ mvn spring-boot:run 
 ~~~
+
+### Content Service Configuration  
+
+By default the UI service is configured to communicate with the content service hosted at `http://localhost:9090/`.  If you want to run the services somewhere other than localhost then
+you can specify the environment variable `SPRINGDOCS_CS_URL` to specify your own URL.
 
 The application will then be available to use at `http://localhost:8080/index.html`.
