@@ -1,5 +1,6 @@
 package com.examples.springdocs;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,9 @@ public class SpringDocsUiApplication {
 	@Controller
 	public static class UiController {
 
+		@Value("#{environment.SPRINGDOCS_CS_URL}")
+		private String contentServiceUrl = "http://localhost:9090/";
+
 		@RequestMapping(value = "/", method = RequestMethod.GET)
 		public String homepage() {
 			return "index";
@@ -25,7 +29,15 @@ public class SpringDocsUiApplication {
 		@RequestMapping(value = "/appinfo", method = RequestMethod.GET)
 		@ResponseBody
 		public String appinfo() {
-			return "{\"name\" : \"Spring Docs\"}";
+			StringBuilder builder = new StringBuilder();
+			builder.append("{\"name\" : \"Spring Docs\"");
+
+			if (contentServiceUrl != null) {
+				builder.append(", \"url\" : \"" + contentServiceUrl + "\"");
+			}
+
+			builder.append("}");
+			return builder.toString();
 		}
 	}
 

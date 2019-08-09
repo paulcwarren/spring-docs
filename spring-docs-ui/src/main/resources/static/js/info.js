@@ -1,20 +1,6 @@
-//angular.module('SpringMusic', ['ngResource']).
-//    factory('Info', function ($resource) {
-//        return $resource('appinfo');
-//    });
-//
-//angular.module('SpringMusic', []).controller('InfoController', [function($scope, Info) {
-//    $scope.info = Info.get();
-//	}]);
+var springDocs = angular.module('SpringDocs');
 
-//function InfoController($scope, Info) {
-//    $scope.info = Info.get();
-//}
-
-var springMusic = angular.module('SpringMusic');
-
-//angular.module('SpringMusic', ['ngResource'])
-springMusic
+springDocs
 	.service('Info', ['$resource', function ($resource) {
         return $resource('appinfo');
     }])

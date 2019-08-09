@@ -1,13 +1,13 @@
-<div id="albums" ng-init="init()">
+<div id="docs" ng-init="init()">
     <div class="page-header">
     <div class="row">
 	  	<div class="col-md-10">
 	        <h1>Documents</h1>
 	        <div>
 	            <span> [ view as: </span>
-	            <a href="" ng-click="setAlbumsView('grid')"><span class="glyphicon glyphicon-th"></span></a>
-	            <a href="" ng-click="setAlbumsView('list')"><span class="glyphicon glyphicon-th-list"></span></a>
-				<a href="" ng-click="setAlbumsView('cats')"><span class="glyphicon glyphicon-th-large"></span></a>
+	            <a href="" ng-click="setDocsView('grid')"><span class="glyphicon glyphicon-th"></span></a>
+	            <a href="" ng-click="setDocsView('list')"><span class="glyphicon glyphicon-th-list"></span></a>
+				<a href="" ng-click="setDocsView('cats')"><span class="glyphicon glyphicon-th-large"></span></a>
 	            <span> | sort by: </span>
 	            <a href="" ng-click="sortField='title'">title</a>
 	            <a href="" ng-click="sortField='author'">author</a>
@@ -35,6 +35,6 @@
     </div>
 
     <div class="row multi-columns-row">
-        <div ng-include src="albumsView"></div>
+        <div ng-include src="docsView"></div>
     </div>
 </div>

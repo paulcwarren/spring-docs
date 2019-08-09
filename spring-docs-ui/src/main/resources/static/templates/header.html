@@ -3,15 +3,11 @@
         <div class="container">
             <div class="navbar-header">
                 <span class="navbar-brand" href="#">Spring Docs <span class="glyphicon glyphicon-file"></span></span>
-                <ul class="navbar-nav">
-                    <!--<li></li>-->
-                </ul>
+                <ul class="navbar-nav"></ul>
 	        </div>
 
             <ul class="nav navbar-nav navbar-right">
             	<div style="display: table-cell; vertical-align: middle; height: 50px;">
-<!-- 	            	<input style="float:left" width="100px" placeholder="Search"/>
- -->
  					<div class="input-group" style="float:left">
 					  <input type="text" class="form-control" placeholder="Search for ..." aria-describedby="basic-addon2" ng-model="app.keywords" ng-keypress="app.keywords=='' && app.findAll()" ng-keyup="$event.keyCode == 13 && app.doSearch()">
 					  <span class="input-group-addon" id="basic-addon2" ng-click="app.doSearch()"><span class="glyphicon glyphicon-{{app.searchIcon}}"/></span>

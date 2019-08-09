@@ -1,11 +1,11 @@
 var springDocsUrl = "http://localhost:9090/";
 
-var springMusic = angular.module('SpringMusic');
-springMusic.
-    service('Documents', function ($resource, $http, SpringDataRestAdapter, Upload, $timeout) {
+var springDocs = angular.module('SpringDocs');
+springDocs.
+    service('Documents', function ($rootScope, $resource, $http, SpringDataRestAdapter, Upload, $timeout) {
 
         this.url = function(path) {
-            return springDocsUrl + path;
+            return $rootScope.Info.url + path;
         }
 
     	this.getAllDocuments = function getAllDocuments() {
@@ -457,8 +457,8 @@ springMusic.
 	    };
 
 
-	    $scope.setAlbumsView = function (viewName) {
-	        $scope.albumsView = "templates/" + viewName + ".html";
+	    $scope.setDocsView = function (viewName) {
+	        $scope.docsView = "templates/" + viewName + ".html";
 	    };
 	    
 	    $scope.uploadFiles = function(files) {
@@ -480,7 +480,7 @@ springMusic.
 
 	    $scope.init = function() {
 	        list();
-	        $scope.setAlbumsView("grid");
+	        $scope.setDocsView("grid");
 	        $scope.sortField = "name";
 	        $scope.sortDescending = false;
 	        $scope.files = [];
@@ -558,7 +558,7 @@ springMusic.
 		};
 	}]);
 
-angular.module('SpringMusic').
+angular.module('SpringDocs').
     directive('inPlaceEdit', function () {
         return {
             restrict: 'E',

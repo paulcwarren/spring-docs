@@ -13,7 +13,7 @@
         <tr ng-repeat="doc in docs | orderBy:sortField:sortDescending">
             <td class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-cog" font-size:50px;></span>
+                    <span class="glyphicon glyphicon-cog"></span>
                 </a>
                 <span ng-if="doc.lockOwner" class="glyphicon glyphicon-lock" title="{{doc.lockOwner}}"></span>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
