@@ -1,14 +1,12 @@
 package com.github.paulcwarren.springdocs;
 
 import com.github.paulcwarren.ginkgo4j.Ginkgo4jSpringRunner;
-import com.github.paulcwarren.springdocs.repositories.jpa.JpaDocumentRepository;
 import com.jayway.restassured.RestAssured;
 import org.apache.http.HttpStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.BeforeEach;
 import static com.github.paulcwarren.ginkgo4j.Ginkgo4jDSL.Context;

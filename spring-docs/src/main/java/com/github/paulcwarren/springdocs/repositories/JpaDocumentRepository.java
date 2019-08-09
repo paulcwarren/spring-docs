@@ -1,4 +1,6 @@
-package com.github.paulcwarren.springdocs.repositories.jpa;
+package com.github.paulcwarren.springdocs.repositories;
+
+import com.github.paulcwarren.springdocs.domain.Document;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
@@ -9,11 +11,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.versions.LockingAndVersioningRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import com.github.paulcwarren.springdocs.domain.Document;
-
 @Repository
 @Profile({"in-memory","mysql","postgres","sqlserver"})
-@CrossOrigin(origins = {"http://spring-docs-ui.apps.mpivcf.com", "http://localhost:8080"})
+@CrossOrigin
 public interface JpaDocumentRepository extends JpaRepository<Document, String>, LockingAndVersioningRepository<Document, String>  {
 
 

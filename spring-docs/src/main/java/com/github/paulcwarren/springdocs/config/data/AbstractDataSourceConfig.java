@@ -1,10 +1,10 @@
 package com.github.paulcwarren.springdocs.config.data;
 
-import org.apache.commons.dbcp.BasicDataSource;
-
 import javax.sql.DataSource;
 
-public class AbstractLocalDataSourceConfig {
+import org.apache.commons.dbcp.BasicDataSource;
+
+public class AbstractDataSourceConfig {
 
     protected DataSource createDataSource(String jdbcUrl, String driverClass, String userName, String password) {
         BasicDataSource dataSource = new BasicDataSource();

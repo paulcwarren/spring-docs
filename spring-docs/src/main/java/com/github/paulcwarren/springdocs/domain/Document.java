@@ -9,6 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import org.springframework.content.commons.annotations.ContentId;
 import org.springframework.content.commons.annotations.ContentLength;
 import org.springframework.content.commons.annotations.MimeType;
@@ -20,10 +24,9 @@ import org.springframework.versions.SuccessorId;
 import org.springframework.versions.VersionLabel;
 import org.springframework.versions.VersionNumber;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @Entity
+@org.springframework.data.mongodb.core.mapping.Document
+@NoArgsConstructor
 @Getter
 @Setter
 public class Document {
@@ -68,28 +71,8 @@ public class Document {
     @VersionLabel
     private String versionLabel;
 
-	private String[] categories;
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String[] getCategories() {
-		return categories;
-	}
-
-	public void setCategories(String[] categories) {
-		this.categories = categories;
-	}
-
-    public Document() {
-    }
-
-
+//	private List<String> categories = new ArrayList<>();
+//
     public Document(Document doc) {
     	this.setTitle(doc.title);
     	this.setAuthor(doc.author);
