@@ -134,35 +134,24 @@
 		</dependency>
  		<dependency>
 			<groupId>com.github.paulcwarren</groupId>
-			<artifactId>spring-content-solr-boot-starter</artifactId>
+			<artifactId>spring-content-elasticsearch</artifactId>
 			<version>${spring.content.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch.client</groupId>
+			<artifactId>elasticsearch-rest-high-level-client</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>com.github.paulcwarren</groupId>
 			<artifactId>spring-versions-jpa-boot-starter</artifactId>
 			<version>${spring.content.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-solrj</artifactId>
-			<version>7.2.1</version>
-            <exclusions>
-		    	<exclusion>
-		    		<groupId>com.google.guava</groupId>
-		    		<artifactId>guava</artifactId>
-		    	</exclusion>
-            </exclusions>
-        </dependency>
+
 		<dependency>
-			<groupId>com.github.paulcwarren</groupId>
-			<artifactId>solr-embedded</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>pl.allegro.tech</groupId>
+			<artifactId>embedded-elasticsearch</artifactId>
+			<version>2.10.0</version>
 		</dependency>
 
 		<!-- Cloud Connectors -->
