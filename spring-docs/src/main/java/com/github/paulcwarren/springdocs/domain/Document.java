@@ -71,8 +71,8 @@ public class Document {
     @VersionLabel
     private String versionLabel;
 
-//	private List<String> categories = new ArrayList<>();
-//
+	private String[] categories = null;
+
     public Document(Document doc) {
     	this.setTitle(doc.title);
     	this.setAuthor(doc.author);
