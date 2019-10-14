@@ -38,7 +38,7 @@ public class MySqlDataSourceConfig extends AbstractDataSourceConfig {
 
     private String getUrl(String url) {
         if (url == null) {
-            url = "jdbc:mysql://localhost/springdocs?emulateLocators=true";
+            url = "jdbc:mysql://localhost/springdocs?emulateLocators=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
         }
         return url;
     }
