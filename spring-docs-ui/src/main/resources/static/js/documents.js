@@ -2,211 +2,230 @@ var springDocsUrl = "http://localhost:9090/";
 
 var springDocs = angular.module('SpringDocs');
 springDocs.
-    service('Documents', function ($rootScope, $resource, $http, SpringDataRestAdapter, Upload, $timeout) {
+    service('Documents', function ($rootScope, $resource, $http, SpringDataRestAdapter, Upload, $timeout, Info) {
 
         this.url = function(path) {
-            return $rootScope.Info.url + path;
+            return Info.get().$promise.then(function(info) {
+                return info.url + path;
+            });
         }
 
-    	this.getAllDocuments = function getAllDocuments() {
-    	    var allDocsUrl = this.url("documents");
-    	    return this.unwrap($http({
-    	        method : 'GET',
-    	        url : allDocsUrl
-    	    }));
-    	}
-    	
-    	this.searchContent = function searchContent(keyword) {
-    	    searchContentUrl = this.url("documents/searchContent/findKeyword?keyword=" + keyword);
-    	    return this.unwrap($http({
-    	        method : 'GET',
-    	        url : searchContentUrl
-    	    }));
-    	}
+        this.getAllDocuments = function getAllDocuments() {
+            return this.unwrap(Info.get().$promise
+                .then(function(info) {
+                    return info.url + "documents";
+                })
+                .then(function(url) {
+                    return $http({
+                                method : 'GET',
+                                url : url
+                            })
+                })
+            );
+        }
 
-    	this.save = function save(doc, onSaveSuccess, onSaveError) {
-    	    resourceUrl = this.url("documents");
-    		return $resource(resourceUrl).save(doc,
-    			function(result) {
-		        	SpringDataRestAdapter.process(result).then(function(processedResponse) {
-		        	    if (processedResponse._links.documentscontent == undefined) {
-		        	        onSaveError({status: "500 (Missing 'documentscontent' href)"});
-		        	    }
+        this.searchContent = function searchContent(keyword) {
+            return this.unwrap(Info.get().$promise
+                .then(function(info) {
+                    return info.url + "documents/searchContent/findKeyword?keyword=" + keyword;
+                })
+                .then(function(url) {
+                    return $http({
+                                method : 'GET',
+                                url : url
+                            })
+                })
+            );
+        }
 
-			        	var upload = Upload.upload(
-			                {url: processedResponse._links.documentscontent.href,
-			                 data: {file: doc.file},
-			                });
-			        	upload.then(function (response) {
-			                $timeout(function () {
-			                    onSaveSuccess(response);
-			                 });
-			            }, onSaveError);  
-		        	});
-    			}, 
-    			onSaveError
-    		);	
-    	}
-    	
-    	this.unwrap = function wrap(promise) {
-	        return SpringDataRestAdapter.process(promise).then(function(processedResponse) {
+        this.save = function save(doc, onSaveSuccess, onSaveError) {
+            return Info.get().$promise
+                .then(function(info) {
+                    return info.url + "documents";
+                })
+                .then(function(url) {
+                    return $resource(url).save(doc,
+                                function(result) {
+                                    SpringDataRestAdapter.process(result).then(function(processedResponse) {
+                                        if (processedResponse._links.documentscontent == undefined) {
+                                            onSaveError({status: "500 (Missing 'documentscontent' href)"});
+                                        }
 
-				var docs = [];
+                                        var upload = Upload.upload(
+                                            {url: processedResponse._links.documentscontent.href,
+                                             data: {file: doc.file},
+                                            });
+                                        upload.then(function (response) {
+                                            $timeout(function () {
+                                                onSaveSuccess(response);
+                                             });
+                                        }, onSaveError);  
+                                    });
+                                },
+                                onSaveError
+                            );
+                });
+        }
 
-	    	  	// log the name of all categories contained in the response to the console
-	    	  	angular.forEach(processedResponse._embeddedItems, function (doc, key) {
-	    	  	  doc.id = doc._links.self.href;
-	    		  docs.push(doc);
-	    	  	});
-	    	  	
-	    	  	return docs;
-    		});
-    	}
+        this.unwrap = function wrap(promise) {
+            return SpringDataRestAdapter.process(promise).then(function(processedResponse) {
+
+                var docs = [];
+
+                // log the name of all categories contained in the response to the console
+                angular.forEach(processedResponse._embeddedItems, function (doc, key) {
+                  doc.id = doc._links.self.href;
+                  docs.push(doc);
+                });
+
+                return docs;
+            });
+        }
     }).
     service('Document', function ($http, $q, Upload, $timeout) {
-    	this.update = function update(doc) {
-    		var def = $q.defer();
+        this.update = function update(doc) {
+            var def = $q.defer();
 
-    		$http.put(doc.id, doc)
-    			.success(function(response) {
-    				if (doc.file) {
-			        	var upload = Upload.upload(
-			                {url: doc._links.documentscontent.href,
-			                 data: {file: doc.file},
-			                });
-			        	upload.then(function (response) {
-			                $timeout(function () {
-			                    def.resolve(response);
-			                 });
-			            }, function(response) {
-			                $timeout(function () {
-				            	def.reject(response);
-				            });
-			            });  
-    				} else {
-		                $timeout(function () {
-							def.resolve(response);
-						});
-					}
-    			})
-    			.error(function(response) {
-	                $timeout(function () {
-						def.resolve(response);
-					});
-				});
+            $http.put(doc.id, doc)
+                .success(function(response) {
+                    if (doc.file) {
+                        var upload = Upload.upload(
+                            {url: doc._links.documentscontent.href,
+                             data: {file: doc.file},
+                            });
+                        upload.then(function (response) {
+                            $timeout(function () {
+                                def.resolve(response);
+                             });
+                        }, function(response) {
+                            $timeout(function () {
+                                def.reject(response);
+                            });
+                        });  
+                    } else {
+                        $timeout(function () {
+                            def.resolve(response);
+                        });
+                    }
+                })
+                .error(function(response) {
+                    $timeout(function () {
+                        def.resolve(response);
+                    });
+                });
 
-    		return def.promise;
-    	}
+            return def.promise;
+        }
 
-    	this.remove = function remove(doc) {
-    		var def = $q.defer();
+        this.remove = function remove(doc) {
+            var def = $q.defer();
 
-    		$http({method: 'DELETE', url: doc._links.documentscontent.href, data: '', headers: {'Accept': doc.mimeType, 'Content-Type': doc.mimeType}})
-    				.success(function(response) {
-			    		$http.delete(doc._links.self.href)
-			    			.success(function(response) {
-		    					def.resolve(response);
-			    			})
-			    			.error(function(response) {
-    							def.reject(response);
-    					});
-					})
-    				.error(function(response) {
-						def.reject(response);
-    				});
+            $http({method: 'DELETE', url: doc._links.documentscontent.href, data: '', headers: {'Accept': doc.mimeType, 'Content-Type': doc.mimeType}})
+                    .success(function(response) {
+                        $http.delete(doc._links.self.href)
+                            .success(function(response) {
+                                def.resolve(response);
+                            })
+                            .error(function(response) {
+                                def.reject(response);
+                        });
+                    })
+                    .error(function(response) {
+                        def.reject(response);
+                    });
 
-    		return def.promise;
-    	}
+            return def.promise;
+        }
 
-    	this.lock = function lock(doc) {
-    		var def = $q.defer();
-			var headers = {};
-			headers["Accept"] = doc.mimeType;
-			headers["Content-Type"] = doc.mimeType;
+        this.lock = function lock(doc) {
+            var def = $q.defer();
+            var headers = {};
+            headers["Accept"] = doc.mimeType;
+            headers["Content-Type"] = doc.mimeType;
 
-    		$http({method: 'PUT', url: doc._links.self.href + "/lock", data: '', headers: headers})
-    				.success(function(response) {
-		    			def.resolve(response);
-					})
-    				.error(function(response) {
-						def.reject(response);
-    				});
+            $http({method: 'PUT', url: doc._links.self.href + "/lock", data: '', headers: headers})
+                    .success(function(response) {
+                        def.resolve(response);
+                    })
+                    .error(function(response) {
+                        def.reject(response);
+                    });
 
-    		return def.promise;
-    	}
+            return def.promise;
+        }
 
-    	this.unlock = function unlock(doc) {
-    		var def = $q.defer();
+        this.unlock = function unlock(doc) {
+            var def = $q.defer();
 
-    		$http({method: 'DELETE', url: doc._links.self.href + "/lock", data: ''})
-    				.success(function(response) {
-		    			def.resolve(response);
-					})
-    				.error(function(response) {
-						def.reject(response);
-    				});
+            $http({method: 'DELETE', url: doc._links.self.href + "/lock", data: ''})
+                    .success(function(response) {
+                        def.resolve(response);
+                    })
+                    .error(function(response) {
+                        def.reject(response);
+                    });
 
-    		return def.promise;
-    	}
+            return def.promise;
+        }
 
 
-		this.version = function version(doc, versionData) {
+        this.version = function version(doc, versionData) {
 
-			var def = $q.defer();
-			var url = doc.id + '/version';
+            var def = $q.defer();
+            var url = doc.id + '/version';
 
-			$http.put(url, versionData)
-				.success(function(response) {
-					def.resolve(response);
-				})
-				.error(function(response) {
-					def.reject(response);
-				});
+            $http.put(url, versionData)
+                .success(function(response) {
+                    def.resolve(response);
+                })
+                .error(function(response) {
+                    def.reject(response);
+                });
 
-			return def.promise;
-		}
+            return def.promise;
+        }
 
-		this.uploadVersion = function uploadVersion(doc, versionData) {
-			var def = $q.defer();
-			var url = doc.id + '/version';
+        this.uploadVersion = function uploadVersion(doc, versionData) {
+            var def = $q.defer();
+            var url = doc.id + '/version';
 
-			$http.put(url, versionData)
-				.success(function(response) {
+            $http.put(url, versionData)
+                .success(function(response) {
 
-					var versionDoc = response;
-					versionDoc.id = versionDoc._links.self.href;
-					versionDoc.file = doc.file;
+                    var versionDoc = response;
+                    versionDoc.id = versionDoc._links.self.href;
+                    versionDoc.file = doc.file;
 
-					if (versionDoc.versionNumber && doc.file) {
-						doc._links = versionDoc._links;
-						var upload = Upload.upload(
-							{
-								url: doc._links.documentscontent.href,
-								data: {file: doc.file}
-							});
-						upload.then(function (response) {
-							$timeout(function () {
-								def.resolve(response);
-							});
-						}, function (response) {
-							$timeout(function () {
-								def.reject(response);
-							});
-						});
-					} else {
-						$timeout(function () {
-							def.resolve(response);
-						});
-					}
-				})
-				.error(function (response) {
-					$timeout(function () {
-						def.resolve(response);
-					});
-				});
+                    if (versionDoc.versionNumber && doc.file) {
+                        doc._links = versionDoc._links;
+                        var upload = Upload.upload(
+                            {
+                                url: doc._links.documentscontent.href,
+                                data: {file: doc.file}
+                            });
+                        upload.then(function (response) {
+                            $timeout(function () {
+                                def.resolve(response);
+                            });
+                        }, function (response) {
+                            $timeout(function () {
+                                def.reject(response);
+                            });
+                        });
+                    } else {
+                        $timeout(function () {
+                            def.resolve(response);
+                        });
+                    }
+                })
+                .error(function (response) {
+                    $timeout(function () {
+                        def.resolve(response);
+                    });
+                });
 
-			return def.promise;
-		}
+            return def.promise;
+        }
 
     }).
     service("EditorStatus", function () {
@@ -231,55 +250,55 @@ springDocs.
         }
     })
     .controller('DocumentsController', ['$scope', '$rootScope', '$uibModal', '$timeout', 'Status', 'Upload', 'SpringDataRestAdapter', 'Documents', 'Document', function($scope, $rootScope, $uibModal, $timeout, Status, Upload, SpringDataRestAdapter, Documents, Document) {
-		function list() {
-			Documents.getAllDocuments().then(function(results) {
-			   $rootScope.docs = results;
-			   var ref = {cats: {}, catDocMap: {}};
-			   categories(results, ref);
+        function list() {
+            Documents.getAllDocuments().then(function(results) {
+               $rootScope.docs = results;
+               var ref = {cats: {}, catDocMap: {}};
+               categories(results, ref);
 //                 $rootScope.cats = {"Something": {"Else": {}}, "Other": {}};
-			   $rootScope.cats = ref.cats;
-			   $rootScope.catsDocs = ref.catDocMap;
+               $rootScope.cats = ref.cats;
+               $rootScope.catsDocs = ref.catDocMap;
 //               alert("cats " + JSON.stringify($rootScope.cats));
 //               alert("catsDocs " + JSON.stringify($rootScope.catsDocs));
-			   $rootScope.catsHead = $rootScope.cats;
-			   $scope.breadcrumb = [];
-			});
-	    }
+               $rootScope.catsHead = $rootScope.cats;
+               $scope.breadcrumb = [];
+            });
+        }
 
-		function categories (docs, ref) {
-			for (var i = 0; i < docs.length; i++) {
-				if (docs[i].categories && docs[i].categories.length) {
-					for (var j=0; j < docs[i].categories.length; j++) {
-						var head = ref.cats;
-						var elements = docs[i].categories[j].split("/");
-						if (elements && elements.length) {
-							for (var e = 0; e < elements.length; e++) {
-								var element = elements[e];
-								if (element === "") {
-									continue;
-								}
-								if (!(element in head)) {
-									head[element] = {};
-								}
-								head = head[element];
-							}
-						}
-						if (!(element in ref.catDocMap)) {
-							ref.catDocMap[element] = [];
-						}
-						ref.catDocMap[element].push(docs[i]);
+        function categories (docs, ref) {
+            for (var i = 0; i < docs.length; i++) {
+                if (docs[i].categories && docs[i].categories.length) {
+                    for (var j=0; j < docs[i].categories.length; j++) {
+                        var head = ref.cats;
+                        var elements = docs[i].categories[j].split("/");
+                        if (elements && elements.length) {
+                            for (var e = 0; e < elements.length; e++) {
+                                var element = elements[e];
+                                if (element === "") {
+                                    continue;
+                                }
+                                if (!(element in head)) {
+                                    head[element] = {};
+                                }
+                                head = head[element];
+                            }
+                        }
+                        if (!(element in ref.catDocMap)) {
+                            ref.catDocMap[element] = [];
+                        }
+                        ref.catDocMap[element].push(docs[i]);
 
-					}
-				}
-			}
-		}
+                    }
+                }
+            }
+        }
 
-	    function clone (obj) {
-	        return JSON.parse(JSON.stringify(obj));
-	    }
-	
-	    function newDocument(doc) {
-	    }
+        function clone (obj) {
+            return JSON.parse(JSON.stringify(obj));
+        }
+
+        function newDocument(doc) {
+        }
 
         function onContentUploadSuccess() {
             Status.success("Document(s) saved");
@@ -306,257 +325,257 @@ springDocs.
 
         // end categories
 
-	    $scope.addDocument = function () {
-	        var addModal = $uibModal.open({
-	            templateUrl: 'templates/documentForm.html',
-	            controller: 'DocumentModalController',
-	            resolve: {
-	                doc: function () {
-	                    return {};
-	                },
-	                action: function() {
-	                    return 'add';
-	                }
-	            }
-	        });
-	
-	        addModal.result.then(function (doc) {
+        $scope.addDocument = function () {
+            var addModal = $uibModal.open({
+                templateUrl: 'templates/documentForm.html',
+                controller: 'DocumentModalController',
+                resolve: {
+                    doc: function () {
+                        return {};
+                    },
+                    action: function() {
+                        return 'add';
+                    }
+                }
+            });
 
-				if (!doc.versionNumber) {
-					doc.versionNumber = "1";
-				}
+            addModal.result.then(function (doc) {
 
-		        Documents.save(doc,
-		            onContentUploadSuccess,
-		            onSaveError
-		        );
-	        });
-	    };
-	
-	    $scope.updateDocument = function (doc) {
-	        var updateModal = $uibModal.open({
-	            templateUrl: 'templates/documentForm.html',
-	            controller: 'DocumentModalController',
-	            resolve: {
-	                doc: function() {
-	                    return clone(doc);
-	                },
-	                action: function() {
-	                    return 'update';
-	                }
-	            }
-	        });
-	
-	        updateModal.result.then(function (doc) {
-		        Document.update(doc)
-		            .then(function (result) {
-		                Status.success("Document updated");
-				    	$timeout(function() {
-			                list();
-				    	}, 1);
-			        })
-		            .catch(function (result) {
-		                Status.error("Error updating document: " + JSON.stringify(result));
-		            });
-		        });
-	    };
-	
-	    $scope.deleteDocument = function (doc) {
-	        Document.remove(doc)
-	            .then(function (result) {
-	                Status.success("Document deleted");
-			    	$timeout(function() {
-		                list();
-			    	}, 1);
-		        })
-	            .catch(function (result) {
-	                Status.error("Error deleting document: " + ((result) ?  result.status : ""));
-	            });
-	    };
+                if (!doc.versionNumber) {
+                    doc.versionNumber = "1";
+                }
 
-	    $scope.lockDocument = function (doc) {
-	        Document.lock(doc)
-	            .then(function (result) {
-	                Status.success("Document locked");
-			    	$timeout(function() {
-		                list();
-			    	}, 1);
-		        })
-	            .catch(function (result) {
-					console.log(result);
-	                Status.error("Error locking document: " + ((result) ?  result.status : ""));
-	            });
-	    };
+                Documents.save(doc,
+                    onContentUploadSuccess,
+                    onSaveError
+                );
+            });
+        };
 
-	    $scope.unlockDocument = function (doc) {
-	        Document.unlock(doc)
-	            .then(function (result) {
-	                Status.success("Document unlocked");
-			    	$timeout(function() {
-		                list();
-			    	}, 1);
-		        })
-	            .catch(function (result) {
-	                Status.error("Error unlocking document: " + ((result) ?  result.status : ""));
-	            });
-	    };
+        $scope.updateDocument = function (doc) {
+            var updateModal = $uibModal.open({
+                templateUrl: 'templates/documentForm.html',
+                controller: 'DocumentModalController',
+                resolve: {
+                    doc: function() {
+                        return clone(doc);
+                    },
+                    action: function() {
+                        return 'update';
+                    }
+                }
+            });
 
-		$scope.versionDocument = function (doc) {
+            updateModal.result.then(function (doc) {
+                Document.update(doc)
+                    .then(function (result) {
+                        Status.success("Document updated");
+                        $timeout(function() {
+                            list();
+                        }, 1);
+                    })
+                    .catch(function (result) {
+                        Status.error("Error updating document: " + JSON.stringify(result));
+                    });
+                });
+        };
 
-			var versionData = {};
-			versionData['number'] = (+ doc.versionNumber) +1;
-			versionData['label'] = "next version " + versionData.number;
+        $scope.deleteDocument = function (doc) {
+            Document.remove(doc)
+                .then(function (result) {
+                    Status.success("Document deleted");
+                    $timeout(function() {
+                        list();
+                    }, 1);
+                })
+                .catch(function (result) {
+                    Status.error("Error deleting document: " + ((result) ?  result.status : ""));
+                });
+        };
 
-			Document.version(doc, versionData)
-				.then(function (result) {
-					Status.success("Document version created");
-					$timeout(function() {
-						list();
-					}, 1);
-				})
-				.catch(function (result) {
-					Status.error("Error versioning document: " + ((result) ?  result.status : ""));
-				});
-		};
+        $scope.lockDocument = function (doc) {
+            Document.lock(doc)
+                .then(function (result) {
+                    Status.success("Document locked");
+                    $timeout(function() {
+                        list();
+                    }, 1);
+                })
+                .catch(function (result) {
+                    console.log(result);
+                    Status.error("Error locking document: " + ((result) ?  result.status : ""));
+                });
+        };
 
+        $scope.unlockDocument = function (doc) {
+            Document.unlock(doc)
+                .then(function (result) {
+                    Status.success("Document unlocked");
+                    $timeout(function() {
+                        list();
+                    }, 1);
+                })
+                .catch(function (result) {
+                    Status.error("Error unlocking document: " + ((result) ?  result.status : ""));
+                });
+        };
 
-	    $scope.uploadDocumentVersion = function (doc) {
+        $scope.versionDocument = function (doc) {
 
-			var uploadDocumentVersion = $uibModal.open({
-				templateUrl: 'templates/versionForm.html',
-				controller: 'DocumentVersionController',
-				resolve: {
-					doc: function() {
-						return clone(doc);
-					},
-					action: function() {
-						return 'upload';
-					}
-				}
-			});
+            var versionData = {};
+            versionData['number'] = (+ doc.versionNumber) +1;
+            versionData['label'] = "next version " + versionData.number;
 
-			uploadDocumentVersion.result.then(function (doc) {
-
-				var versionData = {};
-				versionData['number'] = doc.versionNumber;
-				versionData['label'] = doc.versionLabel;
-
-				Document.uploadVersion(doc, versionData)
-					.then(function (result) {
-						Status.success("Uploaded Document version");
-						$timeout(function () {
-							list();
-						}, 1);
-					})
-					.catch(function (result) {
-						Status.error("Error uploading Document version: " + JSON.stringify(result));
-					});
-			});
+            Document.version(doc, versionData)
+                .then(function (result) {
+                    Status.success("Document version created");
+                    $timeout(function() {
+                        list();
+                    }, 1);
+                })
+                .catch(function (result) {
+                    Status.error("Error versioning document: " + ((result) ?  result.status : ""));
+                });
+        };
 
 
-	    };
+        $scope.uploadDocumentVersion = function (doc) {
+
+            var uploadDocumentVersion = $uibModal.open({
+                templateUrl: 'templates/versionForm.html',
+                controller: 'DocumentVersionController',
+                resolve: {
+                    doc: function() {
+                        return clone(doc);
+                    },
+                    action: function() {
+                        return 'upload';
+                    }
+                }
+            });
+
+            uploadDocumentVersion.result.then(function (doc) {
+
+                var versionData = {};
+                versionData['number'] = doc.versionNumber;
+                versionData['label'] = doc.versionLabel;
+
+                Document.uploadVersion(doc, versionData)
+                    .then(function (result) {
+                        Status.success("Uploaded Document version");
+                        $timeout(function () {
+                            list();
+                        }, 1);
+                    })
+                    .catch(function (result) {
+                        Status.error("Error uploading Document version: " + JSON.stringify(result));
+                    });
+            });
 
 
-	    $scope.setDocsView = function (viewName) {
-	        $scope.docsView = "templates/" + viewName + ".html";
-	    };
-	    
-	    $scope.uploadFiles = function(files) {
-	        if (files && files.length) {
-	          for (var i = 0; i < files.length; i++) {
-	            doc = {
-	            	'title': files[i].name,
-	            	'file': files[i]
-	            };
+        };
 
-				if (!doc.versionNumber) {
-					doc.versionNumber = "1";
-				}
 
-	            Documents.save(doc, onContentUploadSuccess, onSaveError);
-	          }
-	        }
-	    };
+        $scope.setDocsView = function (viewName) {
+            $scope.docsView = "templates/" + viewName + ".html";
+        };
 
-	    $scope.init = function() {
-	        list();
-	        $scope.setDocsView("grid");
-	        $scope.sortField = "name";
-	        $scope.sortDescending = false;
-	        $scope.files = [];
-	    };
-	}])
-	.controller('DocumentModalController', ['$scope', '$uibModalInstance', 'doc', 'action', function ($scope, $uibModalInstance, doc, action) {
-	    $scope.docAction = action;
-	    $scope.doc = doc;
-	
-	    $scope.validateFile = function(file) {
-	    	return true;
-	    };
+        $scope.uploadFiles = function(files) {
+            if (files && files.length) {
+              for (var i = 0; i < files.length; i++) {
+                doc = {
+                    'title': files[i].name,
+                    'file': files[i]
+                };
 
-	    $scope.ok = function () {
-	    	$uibModalInstance.close($scope.doc);
-	    };
-	
-	    $scope.cancel = function () {
-	    	$uibModalInstance.dismiss('cancel');
-	    };
-	}])
-	.controller('DocumentEditorController', ['$scope', 'Document', 'Status', 'EditorStatus', function($scope, Document, Status, EditorStatus) {
-	    $scope.enableEditor = function (doc, fieldName) {
-	        $scope.newFieldValue = doc[fieldName];
-	        EditorStatus.enable(doc.id, fieldName);
-	    };
-	
-	    $scope.disableEditor = function () {
-	        EditorStatus.disable();
-	    };
-	
-	    $scope.isEditorEnabled = function (doc, fieldName) {
-	        return EditorStatus.isEnabled(doc.id, fieldName);
-	    };
-	
-	    $scope.save = function (doc, fieldName) {
-	        if ($scope.newFieldValue === "") {
-	            return false;
-	        }
-	
-	        doc[fieldName] = $scope.newFieldValue;
-	
-	        Document.update(doc)
-	        	.then(function() {
-	        		Status.success("Document updated");
-	        		list();
-	        	})
-	        	.catch(function() {
-	        		Status.error("Error updating document: " + result.status);
-	        	});
-	
-	        $scope.disableEditor();
-	    };
-	
-	    $scope.disableEditor();
-	}])
+                if (!doc.versionNumber) {
+                    doc.versionNumber = "1";
+                }
 
-	.controller('DocumentVersionController', ['$scope', '$uibModalInstance', 'doc', 'action', function ($scope, $uibModalInstance, doc, action) {
-		$scope.docAction = action;
-		$scope.doc = doc;
+                Documents.save(doc, onContentUploadSuccess, onSaveError);
+              }
+            }
+        };
 
-		$scope.doc.versionNumber = (+ doc.versionNumber) +1;
-		$scope.doc.versionLabel = "";
+        $scope.init = function() {
+            list();
+            $scope.setDocsView("grid");
+            $scope.sortField = "name";
+            $scope.sortDescending = false;
+            $scope.files = [];
+        };
+    }])
+    .controller('DocumentModalController', ['$scope', '$uibModalInstance', 'doc', 'action', function ($scope, $uibModalInstance, doc, action) {
+        $scope.docAction = action;
+        $scope.doc = doc;
 
-		$scope.validateFile = function(file) {
-			return true;
-		};
+        $scope.validateFile = function(file) {
+            return true;
+        };
 
-		$scope.ok = function () {
-			$uibModalInstance.close($scope.doc);
-		};
+        $scope.ok = function () {
+            $uibModalInstance.close($scope.doc);
+        };
 
-		$scope.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
-		};
-	}]);
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+    }])
+    .controller('DocumentEditorController', ['$scope', 'Document', 'Status', 'EditorStatus', function($scope, Document, Status, EditorStatus) {
+        $scope.enableEditor = function (doc, fieldName) {
+            $scope.newFieldValue = doc[fieldName];
+            EditorStatus.enable(doc.id, fieldName);
+        };
+
+        $scope.disableEditor = function () {
+            EditorStatus.disable();
+        };
+
+        $scope.isEditorEnabled = function (doc, fieldName) {
+            return EditorStatus.isEnabled(doc.id, fieldName);
+        };
+
+        $scope.save = function (doc, fieldName) {
+            if ($scope.newFieldValue === "") {
+                return false;
+            }
+
+            doc[fieldName] = $scope.newFieldValue;
+
+            Document.update(doc)
+                .then(function() {
+                    Status.success("Document updated");
+                    list();
+                })
+                .catch(function() {
+                    Status.error("Error updating document: " + result.status);
+                });
+
+            $scope.disableEditor();
+        };
+
+        $scope.disableEditor();
+    }])
+
+    .controller('DocumentVersionController', ['$scope', '$uibModalInstance', 'doc', 'action', function ($scope, $uibModalInstance, doc, action) {
+        $scope.docAction = action;
+        $scope.doc = doc;
+
+        $scope.doc.versionNumber = (+ doc.versionNumber) +1;
+        $scope.doc.versionLabel = "";
+
+        $scope.validateFile = function(file) {
+            return true;
+        };
+
+        $scope.ok = function () {
+            $uibModalInstance.close($scope.doc);
+        };
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+    }]);
 
 angular.module('SpringDocs').
     directive('inPlaceEdit', function () {
