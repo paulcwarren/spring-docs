@@ -21,7 +21,7 @@ public class AuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
 
 	@Override
 	public void commence(final HttpServletRequest request, final HttpServletResponse response,
-			final AuthenticationException authException) throws IOException, ServletException {
+			final AuthenticationException authException) throws IOException {
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		response.addHeader("WWW-Authenticate", "Basic realm=" + getRealmName() + "");
 
@@ -30,7 +30,7 @@ public class AuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
 	}
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() {
 		setRealmName(SpringSecurityConfig.REALM);
 		super.afterPropertiesSet();
 	}
