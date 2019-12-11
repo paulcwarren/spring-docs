@@ -60,7 +60,7 @@ public class SpringDocsApplicationTests {
                         .when()
                             .put("/documentscontent" + document)
                         .then()
-                            .statusCode(HttpStatus.SC_OK);
+                            .statusCode(HttpStatus.SC_CREATED);
                     });
                     It("should return the content in its original format", () -> {
                         given()
