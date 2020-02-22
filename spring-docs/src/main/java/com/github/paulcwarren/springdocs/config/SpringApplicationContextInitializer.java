@@ -26,8 +26,6 @@ import org.springframework.util.StringUtils;
 
 import static java.lang.String.format;
 
-//import com.emc.ecs.connector.S3ServiceInfo;
-
 public class SpringApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     private static final Log logger = LogFactory.getLog(SpringApplicationContextInitializer.class);
