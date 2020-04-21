@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 public class ElasticsearchConfig {
 
     @Bean
-    public RestHighLevelClient client(EmbeddedElastic server) {
+    public RestHighLevelClient client() {
         return new RestHighLevelClient(RestClient.builder(new HttpHost("localhost", 9200, "http")));
     }
 }
