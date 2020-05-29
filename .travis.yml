@@ -4,7 +4,7 @@ jdk:
  - openjdk8
 
 before_install:
- - docker run -d --name elasticsearch  -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" paulcwarren/elasticsearch:latest
+ - docker run -d -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" paulcwarren/elasticsearch:7.6.2
 
 script:
  - mvn install

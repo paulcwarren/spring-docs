@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @Configuration
 @EnableAutoConfiguration
-@EnableMongoRepositories(basePackages = {"com.github.paulcwarren.springdocs.repositories.mongodb"})
+@EnableMongoRepositories(basePackages = {"com.github.paulcwarren.springdocs.repositories"})
 @EntityScan(basePackages="com.github.paulcwarren.springdocs.domain")
 @Profile("mongodb-cloud")
 public class MongoCloudConfig extends AbstractCloudConfig {

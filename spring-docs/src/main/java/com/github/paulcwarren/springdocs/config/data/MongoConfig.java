@@ -1,54 +1,47 @@
 package com.github.paulcwarren.springdocs.config.data;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
-
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
+import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
 @EnableAutoConfiguration
-@EnableMongoRepositories(basePackages = {"com.github.paulcwarren.springdocs.repositories.mongodb"})
+@EnableMongoRepositories(basePackages = {"com.github.paulcwarren.springdocs.repositories"})
 @EntityScan(basePackages="com.github.paulcwarren.springdocs.domain")
 @Profile("mongodb")
-public class MongoConfig extends AbstractMongoConfiguration {
+public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Value("#{environment.SPRINGDOCS_MDB_URL}")
-    private String mongoDbUrl;
-
-    @Bean
-    public MongoTemplate mongoTemplate(MongoDbFactory mongoDbFactory) {
-        return new MongoTemplate(mongoDbFactory);
-    }
-
-    @Override
-    public MongoDbFactory mongoDbFactory() {
-
-        if (System.getenv("SPRINGDOCS_MDB_URL") != null) {
-
-            return new SimpleMongoDbFactory(new MongoClientURI(mongoDbUrl));
-        } else {
-
-            return new SimpleMongoDbFactory(new MongoClientURI("mongodb://localhost/springdocs"));
-        }
-    }
+    private String mongoDbUrl = "mongodb://localhost:27017";
 
     @Override
     protected String getDatabaseName() {
         return "springdocs";
     }
 
-    @Override
+    @Bean
     public MongoClient mongoClient() {
-        return new MongoClient();
+        return MongoClients.create(mongoDbUrl);
+    }
+
+    @Bean
+    public GridFsTemplate gridFsTemplate(MappingMongoConverter mongoConverter) {
+        return new GridFsTemplate(mongoDbFactory(), mongoConverter);
+    }
+
+    @Bean
+    public MongoDatabaseFactory mongoDbFactory() {
+        return new SimpleMongoClientDatabaseFactory(mongoClient(), getDatabaseName());
     }
 }
