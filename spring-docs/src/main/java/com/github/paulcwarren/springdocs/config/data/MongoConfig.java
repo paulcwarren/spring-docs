@@ -36,11 +36,6 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     }
 
     @Bean
-    public GridFsTemplate gridFsTemplate(MappingMongoConverter mongoConverter) {
-        return new GridFsTemplate(mongoDbFactory(), mongoConverter);
-    }
-
-    @Bean
     public MongoDatabaseFactory mongoDbFactory() {
         return new SimpleMongoClientDatabaseFactory(mongoClient(), getDatabaseName());
     }
