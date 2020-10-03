@@ -27,7 +27,7 @@ springDocs.
         this.searchContent = function searchContent(keyword) {
             return this.unwrap(Info.get().$promise
                 .then(function(info) {
-                    return info.url + "documents/searchContent/findKeyword?keyword=" + keyword;
+                    return info.url + "documents/searchContent?queryString=" + keyword;
                 })
                 .then(function(url) {
                     return $http({
