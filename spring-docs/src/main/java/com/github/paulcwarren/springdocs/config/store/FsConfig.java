@@ -1,8 +1,8 @@
 package com.github.paulcwarren.springdocs.config.store;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.content.fs.config.EnableFilesystemStores;
@@ -19,23 +19,45 @@ import org.springframework.core.convert.converter.ConverterRegistry;
 @Profile("fs")
 public class FsConfig {
 
-	private static final Log logger = LogFactory.getLog(FsConfig.class);
-
-	@Bean
-	public FilesystemStoreConfigurer configurer() {
+	@Bean	
+	@ConditionalOnExpression("'${spring.content.fs.directoryFormat}'=='flat'")
+	public FilesystemStoreConfigurer flatConfigurer() {
 		return new FilesystemStoreConfigurer() {
 
 			@Override
 			public void configureFilesystemStoreConverters(ConverterRegistry registry) {
 				registry.addConverter(new Converter<String, String>() {
 
+					// Single Directory
 					@Override
 					public String convert(String source) {
 						// Standard UID format
 						return String.format("%s", source.toString());
 					}
+					
 				});
 			}
 		};
 	}
+	
+	@Bean
+	@ConditionalOnExpression("'${spring.content.fs.directoryFormat}'=='hierarchy'")
+	public FilesystemStoreConfigurer hierarchyConfigurer() {
+		return new FilesystemStoreConfigurer() {
+
+			@Override
+			public void configureFilesystemStoreConverters(ConverterRegistry registry) {
+				registry.addConverter(new Converter<String, String>() {
+					
+					// Directory hierarchy
+					@Override
+					public String convert(String source) {
+						// Standard UID format
+						return String.format("/%s", source.toString().replaceAll("-", "")).replaceAll("..", "$0/");
+					}									
+				});
+			}
+		};
+	}
+	
 }
