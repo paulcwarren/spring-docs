@@ -1,5 +1,7 @@
 package com.github.paulcwarren.springdocs.config;
 
+import static java.lang.String.format;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -8,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.boot.system.SystemProperties;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.github.paulcwarren.springdocs.repositories.JpaDocumentRepository;
 import com.github.paulcwarren.springdocs.repositories.MongoDocumentRepository;
 import com.github.paulcwarren.springdocs.stores.FsDocumentStore;
@@ -15,18 +21,13 @@ import com.github.paulcwarren.springdocs.stores.GridFsDocumentStore;
 import com.github.paulcwarren.springdocs.stores.JpaDocumentStore;
 import com.github.paulcwarren.springdocs.stores.S3DocumentStore;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import static java.lang.String.format;
-
 public class CorsOriginUpdater {
 
     private static Method method = null;
 
     static {
 
-        String allowedHost = System.getenv("SPRINGDOCS_ALLOW_HOST");
+        String allowedHost = SystemProperties.get("SPRINGDOCS_ALLOW_HOST");
 
         if (allowedHost != null) {
 

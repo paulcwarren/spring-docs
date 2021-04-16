@@ -22,10 +22,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<spring.content.version>1.2.0</spring.content.version>
+		<spring.content.version>1.2.2</spring.content.version>
 	</properties>
 
-	<dependencies>
+	<dependencies>	
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -107,15 +107,21 @@
 			<artifactId>spring-content-renditions-boot-starter</artifactId>
 			<version>${spring.content.version}</version>
 		</dependency>
- 		<dependency>
+		<!-- Search defaults to elasticsearch. Comment if you want to use solor.  -->
+  		<dependency>
 			<groupId>com.github.paulcwarren</groupId>
 			<artifactId>spring-content-elasticsearch</artifactId>
 			<version>${spring.content.version}</version>
-		</dependency>
+		</dependency>		
+        <dependency>
+            <groupId>com.github.paulcwarren</groupId>
+            <artifactId>spring-content-solr</artifactId>
+                <version>${spring.content.version}</version>
+        </dependency>   		
 		<dependency>
 			<groupId>org.elasticsearch.client</groupId>
 			<artifactId>elasticsearch-rest-high-level-client</artifactId>
-		</dependency>
+		</dependency>	
 
 		<dependency>
 			<groupId>com.github.paulcwarren</groupId>
@@ -174,6 +180,23 @@
 			<artifactId>tika-parsers</artifactId>
 			<version>1.24.1</version>
 		</dependency>
+
+        <!--  Solr -->
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-solrj</artifactId>
+			<version>7.7.3</version> <!-- Match the deployed instance -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.codehaus.woodstox</groupId>
+					<artifactId>wstx-asl</artifactId>
+				</exclusion>
+				<exclusion>
+					<artifactId>log4j</artifactId>
+					<groupId>log4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>   
 
 		<!-- Test -->
 		<dependency>

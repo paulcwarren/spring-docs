@@ -21,7 +21,7 @@ are used to configure these various services, as explained below.
 The Content Service can be started locally using the following command:
 
 ~~~
-~/spring-docs/spring-docs/$ mvn spring-boot:run [-Dspring.profiles.active=<database profile>, <storage profile> [, google-classification]]
+~/spring-docs/spring-docs/$ mvn spring-boot:run [-Dspring-boot.run.profiles=<database profile>, <storage profile> [, google-classification]]
 ~~~
 
 ### Database Profiles
@@ -82,6 +82,10 @@ Document classification can be enabled by adding the `google-classification` to 
 
 By default the application is configured to allow any client to connect.  You can specify the environment variable `SPRINGDOCS_ALLOW_HOST` to specify the host to allow, restricting
 all others.
+
+~~~
+~/spring-docs/spring-docs/$ mvn spring-boot:run -Dspring-boot.run.jvmArguments="-DSPRINGDOCS_ALLOW_HOST=http://localhost:8080"
+~~~
 
 ## Running the UI Service
 
