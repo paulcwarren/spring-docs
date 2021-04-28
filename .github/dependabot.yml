@@ -1,0 +1,66 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: com.google.cloud:google-cloud-language
+    versions:
+    - 1.101.10
+    - 1.101.11
+    - 1.101.12
+    - 1.101.9
+    - 1.102.0
+    - 1.102.1
+  - dependency-name: org.springframework.boot:spring-boot-starter-parent
+    versions:
+    - 2.4.2
+    - 2.4.3
+    - 2.4.4
+  - dependency-name: com.microsoft.sqlserver:mssql-jdbc
+    versions:
+    - 9.1.1.jre15-preview
+    - 9.2.0.jre15
+    - 9.2.1.jre15
+  - dependency-name: org.postgresql:postgresql
+    versions:
+    - 42.2.18
+    - 42.2.19
+  - dependency-name: com.github.paulcwarren:spring-versions-jpa-boot-starter
+    versions:
+    - 1.2.1
+  - dependency-name: com.github.paulcwarren:spring-content-elasticsearch
+    versions:
+    - 1.2.1
+  - dependency-name: com.github.paulcwarren:spring-content-renditions-boot-starter
+    versions:
+    - 1.2.1
+  - dependency-name: com.github.paulcwarren:content-s3-spring-boot-starter
+    versions:
+    - 1.2.1
+  - dependency-name: com.github.paulcwarren:content-mongo-spring-boot-starter
+    versions:
+    - 1.2.1
+  - dependency-name: com.github.paulcwarren:spring-content-jpa-boot-starter
+    versions:
+    - 1.2.1
+  - dependency-name: com.github.paulcwarren:content-fs-spring-boot-starter
+    versions:
+    - 1.2.1
+  - dependency-name: com.github.paulcwarren:spring-content-rest-boot-starter
+    versions:
+    - 1.2.1
+  - dependency-name: org.webjars:bootstrap
+    versions:
+    - 4.6.0
+  - dependency-name: com.github.paulcwarren:ginkgo4j
+    versions:
+    - 1.0.13
+  - dependency-name: org.webjars:angularjs
+    versions:
+    - 1.8.0
+  - dependency-name: org.webjars:jquery
+    versions:
+    - 3.5.1
