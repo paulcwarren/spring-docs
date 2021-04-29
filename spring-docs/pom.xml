@@ -73,7 +73,7 @@
 		<dependency>
 			<groupId>com.microsoft.sqlserver</groupId>
 			<artifactId>mssql-jdbc</artifactId>
-			<version>6.1.0.jre8</version>
+			<version>9.3.1.jre15-preview</version>
 		</dependency>
 
 		<!-- Content Dependencies -->
